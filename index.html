@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#14161c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Keks-To-Do">
+  <title>Keks-To-Do</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-cookie" aria-hidden="true">🍪</div>
+        <div>
+          <h1>Keks-To-Do</h1>
+          <p id="subtitle">Deine Woche. Deine Kekse. Dein Chaos.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="cookieBalanceButton" class="cookie-balance" title="Keksshop öffnen">
+          <span>🍪</span><strong id="cookieBalance">0</strong>
+        </button>
+        <button id="installButton" class="icon-button hidden" title="App installieren" aria-label="App installieren">⬇️</button>
+        <button id="settingsButton" class="icon-button" title="Einstellungen" aria-label="Einstellungen">⚙️</button>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Hauptnavigation">
+      <button class="nav-button active" data-view="week">📅 <span>Woche</span></button>
+      <button class="nav-button" data-view="stats">📊 <span>Statistik</span></button>
+      <button class="nav-button" data-view="achievements">🏆 <span>Erfolge</span></button>
+      <button class="nav-button" data-view="shop">🏪 <span>Shop</span></button>
+    </nav>
+
+    <main>
+      <section id="weekView" class="view active-view">
+        <div class="week-toolbar">
+          <div>
+            <h2>Wochenplan</h2>
+            <p id="weekRange"></p>
+          </div>
+          <button id="addQuickButton" class="primary-button">＋ Aufgabe</button>
+        </div>
+        <div id="dayTabs" class="day-tabs" role="tablist"></div>
+        <div id="dayCards" class="day-cards"></div>
+      </section>
+
+      <section id="statsView" class="view">
+        <div class="section-heading"><h2>Statistik</h2><p>Der Krümelbericht deiner Produktivität.</p></div>
+        <div id="statsGrid" class="stats-grid"></div>
+        <div class="panel">
+          <h3>Letzte Wochen</h3>
+          <div id="historyChart" class="history-chart"></div>
+        </div>
+        <div class="panel">
+          <h3>Erledigte Aufgaben nach Wochentag</h3>
+          <div id="weekdayChart" class="weekday-chart"></div>
+        </div>
+      </section>
+
+      <section id="achievementsView" class="view">
+        <div class="section-heading"><h2>Erfolge</h2><p id="achievementProgress"></p></div>
+        <div id="achievementGrid" class="card-grid"></div>
+      </section>
+
+      <section id="shopView" class="view">
+        <div class="section-heading"><h2>Keksshop</h2><p>Bezahle mit hart verdientem Gebäck.</p></div>
+        <div class="shop-balance">Dein Guthaben: <strong>🍪 <span id="shopBalance">0</span></strong></div>
+        <div id="shopGrid" class="card-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="taskDialog" class="modal">
+    <form id="taskForm" method="dialog">
+      <div class="modal-header"><h2 id="taskDialogTitle">Neue Aufgabe</h2><button class="close-button" value="cancel" aria-label="Schließen">×</button></div>
+      <label for="taskDay">Tag</label>
+      <select id="taskDay"></select>
+      <label for="taskText">Aufgabe</label>
+      <input id="taskText" maxlength="180" autocomplete="off" placeholder="Was liegt auf dem Keksblech?" required>
+      <div class="modal-actions"><button value="cancel" class="secondary-button">Abbrechen</button><button id="saveTaskButton" value="default" class="primary-button">Speichern</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog" class="modal">
+    <form method="dialog">
+      <div class="modal-header"><h2>Einstellungen</h2><button class="close-button" value="cancel" aria-label="Schließen">×</button></div>
+      <div class="setting-row"><div><strong>Theme</strong><small>Ändert das gesamte Keksgewand.</small></div><select id="themeSelect"></select></div>
+      <div class="setting-row"><div><strong>Sounds</strong><small>Knuspern und Erfolgsplopp.</small></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
+      <div class="setting-actions">
+        <button id="exportButton" type="button" class="secondary-button">💾 Backup exportieren</button>
+        <label class="secondary-button file-button">📂 Backup importieren<input id="importInput" type="file" accept=".keks,application/json"></label>
+        <button id="resetDataButton" type="button" class="danger-button">🧹 Alle Daten löschen</button>
+      </div>
+      <p class="storage-note">Die Daten bleiben auf diesem Gerät. Backups sind deine tragbare Keksdose.</p>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog" class="modal compact-modal">
+    <form method="dialog">
+      <div class="modal-header"><h2 id="confirmTitle">Wirklich?</h2></div>
+      <p id="confirmText"></p>
+      <div class="modal-actions"><button value="cancel" class="secondary-button">Abbrechen</button><button id="confirmOk" value="default" class="danger-button">Bestätigen</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="achievementDialog" class="achievement-modal">
+    <div id="confettiLayer" class="confetti-layer"></div>
+    <div id="achievementCookie" class="happy-cookie" aria-hidden="true"><span class="crown">👑</span><span class="cookie-face">🍪</span></div>
+    <p class="eyebrow">Knusper! Erfolg freigeschaltet</p>
+    <h2 id="achievementTitle"></h2>
+    <div id="achievementEmoji" class="achievement-emoji"></div>
+    <p id="achievementDescription"></p>
+    <button id="closeAchievementButton" class="primary-button">Weiter knuspern 🍪</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input id="hiddenImport" type="file" accept=".keks,application/json" hidden>
+  <script src="app.js" defer></script>
+</body>
+</html>

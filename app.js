@@ -16,8 +16,12 @@ const THEMES = {
   'Halloween':{emoji:'🎃',price:25,dark:true,bg:'#160d1f',surface:'#281836',raised:'#3a224c',text:'#f8ecff',muted:'#bea8cf',primary:'#ff821e',primaryText:'#321500',dangerBg:'#4d223a',dangerText:'#ffa6cb',decoration:'👻'},
   'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'}
 };
-const THEME_ICON_SLUGS={'Dunkel':'dunkel','Keks':'keks','Hühner':'huehner','Herbst':'herbst','Weihnachten':'weihnachten','Frühling':'fruehling','Halloween':'halloween','Pride':'pride'};
-function applyThemeIcon(name){const slug=THEME_ICON_SLUGS[name]||'dunkel',base=`assets/icons/themes/${slug}`;const favicon=$('#appFavicon');if(favicon)favicon.href=`${base}/favicon.svg?v=4`;const touch=$('#appleTouchIcon');if(touch)touch.href=`${base}/apple-touch-icon.png?v=4`;const manifest=$('#appManifest');if(manifest)manifest.href=`assets/manifests/${slug}.webmanifest?v=4`;const preview=$('#appIconPreview');if(preview)preview.src=`${base}/apple-touch-icon.png?v=4`;}
+function applyThemeIcon(){
+  // Das Home-Bildschirm-Icon bleibt absichtlich fest. iOS liest es beim Installieren
+  // aus dem HTML und tauscht es später nicht zuverlässig dynamisch aus.
+  const preview=$('#appIconPreview');
+  if(preview) preview.src='./apple-touch-icon.png?v=20260712-1';
+}
 
 const ACHIEVEMENTS = [
   ['FIRST_COOKIE','Erster Krümel','Verdiene deinen ersten Belohnungskeks.','🍪'],

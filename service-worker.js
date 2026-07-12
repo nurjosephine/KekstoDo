@@ -1,5 +1,42 @@
-const CACHE='keks-to-do-v2-theme-icons-4';
-const ASSETS=["./", "./index.html", "./styles.css", "./app.js", "./assets/manifests/dunkel.webmanifest", "./assets/icons/themes/dunkel/icon-192.png", "./assets/icons/themes/dunkel/icon-512.png", "./assets/icons/themes/dunkel/apple-touch-icon.png", "./assets/icons/themes/dunkel/favicon.svg", "./assets/manifests/keks.webmanifest", "./assets/icons/themes/keks/icon-192.png", "./assets/icons/themes/keks/icon-512.png", "./assets/icons/themes/keks/apple-touch-icon.png", "./assets/icons/themes/keks/favicon.svg", "./assets/manifests/huehner.webmanifest", "./assets/icons/themes/huehner/icon-192.png", "./assets/icons/themes/huehner/icon-512.png", "./assets/icons/themes/huehner/apple-touch-icon.png", "./assets/icons/themes/huehner/favicon.svg", "./assets/manifests/herbst.webmanifest", "./assets/icons/themes/herbst/icon-192.png", "./assets/icons/themes/herbst/icon-512.png", "./assets/icons/themes/herbst/apple-touch-icon.png", "./assets/icons/themes/herbst/favicon.svg", "./assets/manifests/weihnachten.webmanifest", "./assets/icons/themes/weihnachten/icon-192.png", "./assets/icons/themes/weihnachten/icon-512.png", "./assets/icons/themes/weihnachten/apple-touch-icon.png", "./assets/icons/themes/weihnachten/favicon.svg", "./assets/manifests/fruehling.webmanifest", "./assets/icons/themes/fruehling/icon-192.png", "./assets/icons/themes/fruehling/icon-512.png", "./assets/icons/themes/fruehling/apple-touch-icon.png", "./assets/icons/themes/fruehling/favicon.svg", "./assets/manifests/halloween.webmanifest", "./assets/icons/themes/halloween/icon-192.png", "./assets/icons/themes/halloween/icon-512.png", "./assets/icons/themes/halloween/apple-touch-icon.png", "./assets/icons/themes/halloween/favicon.svg", "./assets/manifests/pride.webmanifest", "./assets/icons/themes/pride/icon-192.png", "./assets/icons/themes/pride/icon-512.png", "./assets/icons/themes/pride/apple-touch-icon.png", "./assets/icons/themes/pride/favicon.svg"];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return response;}).catch(()=>caches.match('./index.html'))));});
+const CACHE_NAME = 'keks-to-do-icon-fix-20260712-1';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './styles.css',
+  './app.js',
+  './manifest.webmanifest',
+  './apple-touch-icon.png',
+  './icons/apple-touch-icon.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/favicon-64.png'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+  );
+});

@@ -1,6 +1,6 @@
 # Keks-To-Do Web-App 🍪
 
-Eigenständige, installierbare Web-App für iPhone, iPad, Android und Desktop. Sie enthält die Funktionen der Windows-Version, nur **ohne PDF-Export**.
+Eigenständige, installierbare Web-App für iPhone, iPad, Android und Desktop.
 
 ## Enthalten
 

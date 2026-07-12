@@ -20,7 +20,6 @@
         <div class="brand-cookie" aria-hidden="true">🍪</div>
         <div>
           <h1>Keks-To-Do</h1>
-          <p id="subtitle">Deine Woche. Deine Kekse. Dein Chaos.</p>
         </div>
       </div>
       <div class="top-actions">
@@ -80,12 +79,12 @@
 
   <dialog id="taskDialog" class="modal">
     <form id="taskForm" method="dialog">
-      <div class="modal-header"><h2 id="taskDialogTitle">Neue Aufgabe</h2><button class="close-button" value="cancel" aria-label="Schließen">×</button></div>
+      <div class="modal-header"><h2 id="taskDialogTitle">Neue Aufgabe</h2><button id="closeTaskDialogButton" type="button" class="close-button" aria-label="Schließen">×</button></div>
       <label for="taskDay">Tag</label>
       <select id="taskDay"></select>
       <label for="taskText">Aufgabe</label>
       <input id="taskText" maxlength="180" autocomplete="off" placeholder="Was liegt auf dem Keksblech?" required>
-      <div class="modal-actions"><button value="cancel" class="secondary-button">Abbrechen</button><button id="saveTaskButton" value="default" class="primary-button">Speichern</button></div>
+      <div class="modal-actions"><button id="cancelTaskButton" type="button" class="secondary-button">Abbrechen</button><button id="saveTaskButton" type="submit" class="primary-button">Speichern</button></div>
     </form>
   </dialog>
 

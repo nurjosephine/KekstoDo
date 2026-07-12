@@ -256,7 +256,9 @@ function bindEvents(){
   document.addEventListener('change',e=>{if(e.target.matches('.task-check'))toggleTask(e.target.closest('.task-row').dataset.id,e.target.checked);});
   document.addEventListener('submit',e=>{const f=e.target.closest('[data-add-form]');if(f){e.preventDefault();const input=f.querySelector('input');addTask(f.dataset.addForm,input.value);input.value='';}});
   $('#addQuickButton').onclick=()=>openTaskDialog();
-  $('#taskForm').addEventListener('submit',e=>{if(e.submitter?.value==='cancel')return;e.preventDefault();addTask($('#taskDay').value,$('#taskText').value);$('#taskDialog').close();});
+  $('#taskForm').addEventListener('submit',e=>{e.preventDefault();addTask($('#taskDay').value,$('#taskText').value);$('#taskDialog').close();});
+  $('#cancelTaskButton').onclick=()=>$('#taskDialog').close();
+  $('#closeTaskDialogButton').onclick=()=>$('#taskDialog').close();
   $('#settingsButton').onclick=()=>$('#settingsDialog').showModal(); $('#cookieBalanceButton').onclick=()=>switchView('shop');
   $('#themeSelect').onchange=e=>{const name=e.target.value.replace(/^\S+\s/,'');data.State.Theme=name;applyTheme(name);renderAll();};
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};

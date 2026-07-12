@@ -8,9 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Keks-To-Do">
   <title>Keks-To-Do</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link id="appManifest" rel="manifest" href="assets/manifests/dunkel.webmanifest">
+  <link id="appleTouchIcon" rel="apple-touch-icon" href="assets/icons/themes/dunkel/apple-touch-icon.png">
+  <link id="appFavicon" rel="icon" href="assets/icons/themes/dunkel/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -93,6 +93,8 @@
       <div class="modal-header"><h2>Einstellungen</h2><button class="close-button" value="cancel" aria-label="Schließen">×</button></div>
       <div class="setting-row"><div><strong>Theme</strong><small>Ändert das gesamte Keksgewand.</small></div><select id="themeSelect"></select></div>
       <div class="setting-row"><div><strong>Sounds</strong><small>Knuspern und Erfolgsplopp.</small></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
+      <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Passt sich an dein Theme an. Ein bereits installiertes iPhone-Icon kann iOS nicht automatisch austauschen.</small></div><img id="appIconPreview" class="app-icon-preview" src="assets/icons/themes/dunkel/apple-touch-icon.png" alt="Vorschau des App-Icons"></div>
+      <button id="iconHelpButton" type="button" class="secondary-button full-width-button">🍪 iPhone-Icon aktualisieren</button>
       <div class="setting-actions">
         <button id="exportButton" type="button" class="secondary-button">💾 Backup exportieren</button>
         <label class="secondary-button file-button">📂 Backup importieren<input id="importInput" type="file" accept=".keks,application/json"></label>

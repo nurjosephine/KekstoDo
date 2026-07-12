@@ -16,6 +16,9 @@ const THEMES = {
   'Halloween':{emoji:'🎃',price:25,dark:true,bg:'#160d1f',surface:'#281836',raised:'#3a224c',text:'#f8ecff',muted:'#bea8cf',primary:'#ff821e',primaryText:'#321500',dangerBg:'#4d223a',dangerText:'#ffa6cb',decoration:'👻'},
   'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'}
 };
+const THEME_ICON_SLUGS={'Dunkel':'dunkel','Keks':'keks','Hühner':'huehner','Herbst':'herbst','Weihnachten':'weihnachten','Frühling':'fruehling','Halloween':'halloween','Pride':'pride'};
+function applyThemeIcon(name){const slug=THEME_ICON_SLUGS[name]||'dunkel',base=`assets/icons/themes/${slug}`;const favicon=$('#appFavicon');if(favicon)favicon.href=`${base}/favicon.svg?v=4`;const touch=$('#appleTouchIcon');if(touch)touch.href=`${base}/apple-touch-icon.png?v=4`;const manifest=$('#appManifest');if(manifest)manifest.href=`assets/manifests/${slug}.webmanifest?v=4`;const preview=$('#appIconPreview');if(preview)preview.src=`${base}/apple-touch-icon.png?v=4`;}
+
 const ACHIEVEMENTS = [
   ['FIRST_COOKIE','Erster Krümel','Verdiene deinen ersten Belohnungskeks.','🍪'],
   ['TEN_DONE','Fleißiger Keks','Erledige insgesamt 10 Aufgaben.','✅'],
@@ -111,6 +114,7 @@ function applyTheme(name){
   for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,raised:t.raised,text:t.text,muted:t.muted,primary:t.primary,primaryText:t.primaryText,dangerBg:t.dangerBg,dangerText:t.dangerText})) r.setProperty(`--${k}`,v);
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
+  applyThemeIcon(data.State.Theme);
   if(!data.State.ThemeFirstUsed[name]) data.State.ThemeFirstUsed[name]=new Date().toISOString();
   saveData();
 }
@@ -262,6 +266,7 @@ function bindEvents(){
   $('#settingsButton').onclick=()=>$('#settingsDialog').showModal(); $('#cookieBalanceButton').onclick=()=>switchView('shop');
   $('#themeSelect').onchange=e=>{const name=e.target.value.replace(/^\S+\s/,'');data.State.Theme=name;applyTheme(name);renderAll();};
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};
+  $('#iconHelpButton').onclick=()=>showToast('iPhone: Home-Bildschirm-Icon löschen, Theme wählen und in Safari erneut „Zum Home-Bildschirm“ hinzufügen.');
   $('#exportButton').onclick=exportBackup; $('#importInput').onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';};
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);
   $('#confirmOk').onclick=e=>{e.preventDefault();$('#confirmDialog').close();const a=confirmationAction;confirmationAction=null;a?.();};

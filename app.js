@@ -17,11 +17,27 @@ const THEMES = {
   'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'},
   'Einhornland':{emoji:'🦄',price:75,dark:false,bg:'#fff7ff',surface:'#ffffff',raised:'#f1e8ff',text:'#4b315d',muted:'#806a91',primary:'#d778e9',primaryText:'#32113a',dangerBg:'#ffe2f0',dangerText:'#a23568',decoration:'✨'}
 };
-function applyThemeIcon(){
-  // Das Home-Bildschirm-Icon bleibt absichtlich fest. iOS liest es beim Installieren
-  // aus dem HTML und tauscht es später nicht zuverlässig dynamisch aus.
-  const preview=$('#appIconPreview');
-  if(preview) preview.src='./apple-touch-icon.png?v=20260712-1';
+function applyThemeIcon(themeName){
+  const isUnicorn = themeName === 'Einhornland';
+
+  // Das feste iPhone-/PWA-Icon bleibt immer der bunte Keks.
+  const appleIcon = $('#appleTouchIcon');
+  if (appleIcon) appleIcon.href = './apple-touch-icon.png?v=20260713-cookie-1';
+
+  const preview = $('#appIconPreview');
+  if (preview) preview.src = './apple-touch-icon.png?v=20260713-cookie-1';
+
+  // Das Einhorn erscheint nur im freigeschalteten Einhornland-Theme.
+  const mascot = $('#brandMascot');
+  if (mascot) mascot.textContent = isUnicorn ? '🦄' : '🍪';
+
+  const favicon = $('#appFavicon');
+  if (favicon) {
+    favicon.type = isUnicorn ? 'image/svg+xml' : 'image/png';
+    favicon.href = isUnicorn
+      ? './unicorn-icon.svg?v=20260713-cookie-1'
+      : './icons/favicon-64.png?v=20260713-cookie-1';
+  }
 }
 
 const ACHIEVEMENTS = [
@@ -311,7 +327,7 @@ function bindEvents(){
   $('#settingsButton').onclick=()=>$('#settingsDialog').showModal(); $('#cookieBalanceButton').onclick=()=>switchView('shop');
   $('#themeSelect').onchange=e=>{const name=e.target.value.replace(/^\S+\s/,'');data.State.Theme=name;applyTheme(name);renderAll();};
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};
-  $('#iconHelpButton').onclick=()=>showToast('iPhone: Home-Bildschirm-Icon löschen, Theme wählen und in Safari erneut „Zum Home-Bildschirm“ hinzufügen.');
+  $('#iconHelpButton').onclick=()=>showToast('Das iPhone-Icon ist immer der bunte Keks. Zum Aktualisieren: altes Symbol löschen und die App in Safari erneut zum Home-Bildschirm hinzufügen.');
   $('#exportButton').onclick=exportBackup; $('#importInput').onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';};
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);
   $('#confirmOk').onclick=e=>{e.preventDefault();$('#confirmDialog').close();const a=confirmationAction;confirmationAction=null;a?.();};

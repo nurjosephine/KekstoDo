@@ -14,7 +14,8 @@ const THEMES = {
   'Weihnachten':{emoji:'🎄',price:25,dark:true,bg:'#0d231d',surface:'#18372c',raised:'#254b3c',text:'#f8f7e8',muted:'#bed3c3',primary:'#dc3737',primaryText:'#fff',dangerBg:'#52272b',dangerText:'#ffbabe',decoration:'❄'},
   'Frühling':{emoji:'🌸',price:25,dark:false,bg:'#f4fdee',surface:'#fff',raised:'#e2f4da',text:'#324f32',muted:'#688963',primary:'#ef7ea4',primaryText:'#421327',dangerBg:'#ffe1e7',dangerText:'#a33759',decoration:'🌼'},
   'Halloween':{emoji:'🎃',price:25,dark:true,bg:'#160d1f',surface:'#281836',raised:'#3a224c',text:'#f8ecff',muted:'#bea8cf',primary:'#ff821e',primaryText:'#321500',dangerBg:'#4d223a',dangerText:'#ffa6cb',decoration:'👻'},
-  'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'}
+  'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'},
+  'Einhornland':{emoji:'🦄',price:75,dark:false,bg:'#fff7ff',surface:'#ffffff',raised:'#f1e8ff',text:'#4b315d',muted:'#806a91',primary:'#d778e9',primaryText:'#32113a',dangerBg:'#ffe2f0',dangerText:'#a23568',decoration:'✨'}
 };
 function applyThemeIcon(){
   // Das Home-Bildschirm-Icon bleibt absichtlich fest. iOS liest es beim Installieren
@@ -40,6 +41,9 @@ const ACHIEVEMENTS = [
   ['COLORFUL_CRUMBS','Bunte Krümel','Besitze alle Themes.','🌈'],
   ['COOKIE_MILLIONAIRE','Keksmillionär','Besitze gleichzeitig 5000 Kekse.','💰'],
   ['STREAK_COOKIE','Serienkeks','Erledige an 30 Tagen hintereinander mindestens eine Aufgabe.','🔥'],
+  ['MAGICAL_COOKIE','Magischer Keks','Erledige 100 Aufgaben im Einhornland.','🦄'],
+  ['RAINBOW_BAKER','Regenbogenbäcker','Sammle insgesamt 500 Kekse.','🌈'],
+  ['STARDUST','Sternenstaub','Erledige an 50 Tagen hintereinander mindestens eine Aufgabe.','⭐'],
   ['CRUMB_KING','Krümelkönig','Schalte alle anderen Erfolge frei.','👑',true]
 ].map(([id,name,description,emoji,secret=false])=>({id,name,description,emoji,secret}));
 
@@ -48,7 +52,8 @@ const defaultState = () => ({
   AllTimeOnTimeCompleted:0, BestWeekCompleted:0, WeeksReset:0, PerfectWeeks:0, ConsecutivePerfectMondays:0,
   ConsecutiveNoForgottenWeeks:0, EarlyTasks:0, ChickenThemeCompleted:0, ChristmasDecemberCookies:0,
   CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true,
-  UnlockedThemes:['Dunkel','Keks'], UnlockedAchievements:[], ThemeFirstUsed:{}, WeekdayCompleted:{}, WeeklyHistory:[]
+  UnlockedThemes:['Dunkel','Keks'], UnlockedAchievements:[], ThemeFirstUsed:{}, WeekdayCompleted:{}, WeeklyHistory:[],
+  UnicornThemeCompleted:0, UnicornDiscovered:false, UnicornDiscoveryShown:false, LegendaryRideShown:false
 });
 let data = loadData();
 let activeDay = todayListDay();
@@ -118,13 +123,16 @@ function applyTheme(name){
   for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,raised:t.raised,text:t.text,muted:t.muted,primary:t.primary,primaryText:t.primaryText,dangerBg:t.dangerBg,dangerText:t.dangerText})) r.setProperty(`--${k}`,v);
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
+  document.body.classList.toggle('unicorn-theme',data.State.Theme==='Einhornland');
   applyThemeIcon(data.State.Theme);
   if(!data.State.ThemeFirstUsed[name]) data.State.ThemeFirstUsed[name]=new Date().toISOString();
   saveData();
 }
 
 function renderAll(){
+  discoverUnicornIfReady();
   applyTheme(data.State.Theme); renderHeader(); renderDays(); renderStats(); renderAchievements(); renderShop(); renderSettings();
+  checkLegendaryRide();
 }
 function renderHeader(){
   $('#cookieBalance').textContent=data.State.CookieBalance; $('#shopBalance').textContent=data.State.CookieBalance;
@@ -159,6 +167,7 @@ function toggleTask(id,checked){
     updateDailyStreak(now);
     if(now.getHours()<9) data.State.EarlyTasks++;
     if(data.State.Theme==='Hühner') data.State.ChickenThemeCompleted++;
+    if(data.State.Theme==='Einhornland') data.State.UnicornThemeCompleted++;
     if(!item.CookieAwardEvaluated){
       item.CookieAwardEvaluated=true;
       const day=DAYS.find(d=>d.name===item.Day);
@@ -166,7 +175,8 @@ function toggleTask(id,checked){
       if(item.CookieAwarded){
         data.State.CookieBalance++; data.State.LifetimeCookies++; data.State.AllTimeOnTimeCompleted++;
         if(now.getMonth()===11) data.State.ChristmasDecemberCookies++;
-        showToast('+1 Belohnungskeks 🍪'); playSound('cookie');
+        if(data.State.Theme==='Einhornland'){ showUnicornCookie(); playSound('unicorn'); }
+        else { showToast('+1 Belohnungskeks 🍪'); playSound('cookie'); }
       } else showToast('Erledigt! Heute leider ohne Belohnungskeks.');
     }
   }else item.CompletedAt=null;
@@ -191,7 +201,8 @@ function checkAchievements(){
     AUTUMN_COLLECTOR:s.ThemeFirstUsed.Herbst&&(Date.now()-new Date(s.ThemeFirstUsed.Herbst).getTime())>=30*86400000,
     CHRISTMAS_BAKER:s.ChristmasDecemberCookies>=100, TRICK_OR_TREAT:s.UnlockedThemes.includes('Halloween'),
     COLORFUL_CRUMBS:Object.keys(THEMES).every(t=>s.UnlockedThemes.includes(t)), COOKIE_MILLIONAIRE:s.CookieBalance>=5000,
-    STREAK_COOKIE:s.CurrentDailyStreak>=30
+    STREAK_COOKIE:s.CurrentDailyStreak>=30, MAGICAL_COOKIE:s.UnicornThemeCompleted>=100,
+    RAINBOW_BAKER:s.LifetimeCookies>=500, STARDUST:s.CurrentDailyStreak>=50
   };
   for(const a of ACHIEVEMENTS.filter(x=>x.id!=='CRUMB_KING')) if(should[a.id]&&!s.UnlockedAchievements.includes(a.id)){s.UnlockedAchievements.push(a.id);achievementQueue.push(a);}
   const allOther=ACHIEVEMENTS.filter(a=>a.id!=='CRUMB_KING').every(a=>s.UnlockedAchievements.includes(a.id));
@@ -222,13 +233,43 @@ function renderAchievements(){
 }
 function renderShop(){
   $('#shopBalance').textContent=data.State.CookieBalance;
-  $('#shopGrid').innerHTML=Object.entries(THEMES).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
+  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
 }
 function buyOrUseTheme(name){
   const t=THEMES[name]; if(!t)return;
   if(data.State.UnlockedThemes.includes(name)){data.State.Theme=name;applyTheme(name);renderAll();showToast(`${t.emoji} ${name}-Theme aktiviert.`);return;}
   if(data.State.CookieBalance<t.price){showToast(`Dir fehlen ${t.price-data.State.CookieBalance} Kekse.`);return;}
-  data.State.CookieBalance-=t.price;data.State.UnlockedThemes.push(name);data.State.Theme=name;if(!data.State.ThemeFirstUsed[name])data.State.ThemeFirstUsed[name]=new Date().toISOString();saveData();checkAchievements();renderAll();showToast(`${t.emoji} ${name} freigeschaltet!`);playSound('achievement');
+  data.State.CookieBalance-=t.price;data.State.UnlockedThemes.push(name);data.State.Theme=name;if(!data.State.ThemeFirstUsed[name])data.State.ThemeFirstUsed[name]=new Date().toISOString();saveData();checkAchievements();renderAll();
+  if(name==='Einhornland') showUnicornWelcome(); else showToast(`${t.emoji} ${name} freigeschaltet!`);
+  playSound(name==='Einhornland'?'unicorn':'achievement');
+}
+function discoverUnicornIfReady(){
+  const s=data.State;
+  const ready=s.LifetimeCookies>=500||s.UnlockedAchievements.includes('CRUMB_KING');
+  if(!ready||s.UnicornDiscovered)return;
+  s.UnicornDiscovered=true; saveData();
+  if(!s.UnicornDiscoveryShown){
+    s.UnicornDiscoveryShown=true; saveData();
+    setTimeout(()=>{ const d=$('#unicornDiscoveryDialog'); if(d&&!d.open){makeConfetti(false);d.showModal();playSound('unicorn');}},350);
+  }
+}
+function showUnicornWelcome(){
+  const d=$('#unicornWelcomeDialog'); if(d&&!d.open){makeConfetti(false);d.showModal();}
+}
+function showUnicornCookie(){
+  const m=$('#unicornCookieMoment');
+  m.classList.remove('show'); void m.offsetWidth; m.classList.add('show');
+  showToast('+1 magischer Belohnungskeks 🦄🍪');
+  setTimeout(()=>m.classList.remove('show'),1500);
+}
+function checkLegendaryRide(){
+  const s=data.State;
+  const allAchievements=ACHIEVEMENTS.every(a=>s.UnlockedAchievements.includes(a.id));
+  const allThemes=Object.keys(THEMES).every(t=>s.UnlockedThemes.includes(t));
+  if(!s.LegendaryRideShown&&allAchievements&&allThemes&&s.LifetimeCookies>=1000){
+    s.LegendaryRideShown=true; saveData();
+    setTimeout(()=>{const d=$('#legendaryRideDialog');if(d&&!d.open){makeConfetti(true);d.showModal();playSound('king');}},700);
+  }
 }
 function renderSettings(){
   $('#themeSelect').innerHTML=data.State.UnlockedThemes.filter(t=>THEMES[t]).map(t=>`<option ${t===data.State.Theme?'selected':''}>${THEMES[t].emoji} ${t}</option>`).join('');
@@ -246,7 +287,7 @@ function resetAll(){ data={Version:2,CreatedAt:new Date().toISOString(),Items:[]
 
 function playSound(type){
   if(!data.State.SoundsEnabled)return;
-  try{const C=window.AudioContext||window.webkitAudioContext,ctx=new C();const notes=type==='king'?[523,659,784,1047]:type==='achievement'?[523,659,784]:[740,880];notes.forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.001,ctx.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.08,ctx.currentTime+i*.09+.01);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.09+.11);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+i*.09);o.stop(ctx.currentTime+i*.09+.12);});}catch{}
+  try{const C=window.AudioContext||window.webkitAudioContext,ctx=new C();const notes=type==='king'?[523,659,784,1047]:type==='unicorn'?[659,784,988,1319]:type==='achievement'?[523,659,784]:[740,880];notes.forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.001,ctx.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.08,ctx.currentTime+i*.09+.01);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.09+.11);o.connect(g).connect(ctx.destination);o.start(ctx.currentTime+i*.09);o.stop(ctx.currentTime+i*.09+.12);});}catch{}
 }
 let toastTimer; function showToast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2600);}
 function askConfirm(title,text,action){$('#confirmTitle').textContent=title;$('#confirmText').textContent=text;confirmationAction=action;$('#confirmDialog').showModal();}
@@ -275,6 +316,9 @@ function bindEvents(){
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);
   $('#confirmOk').onclick=e=>{e.preventDefault();$('#confirmDialog').close();const a=confirmationAction;confirmationAction=null;a?.();};
   $('#closeAchievementButton').onclick=()=>{$('#achievementDialog').close();if(achievementQueue.length)setTimeout(showNextAchievement,250);};
+  $('#closeUnicornDiscoveryButton').onclick=()=>$('#unicornDiscoveryDialog').close();
+  $('#closeUnicornWelcomeButton').onclick=()=>$('#unicornWelcomeDialog').close();
+  $('#closeLegendaryRideButton').onclick=()=>$('#legendaryRideDialog').close();
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();pendingInstallPrompt=e;$('#installButton').classList.remove('hidden');});
   $('#installButton').onclick=async()=>{if(!pendingInstallPrompt){showToast('Auf dem iPhone: Safari → Teilen → Zum Home-Bildschirm.');return;}pendingInstallPrompt.prompt();await pendingInstallPrompt.userChoice;pendingInstallPrompt=null;$('#installButton').classList.add('hidden');};
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){weeklyResetIfNeeded();checkAchievements();renderAll();}});

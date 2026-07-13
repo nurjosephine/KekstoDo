@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd6f3"/><stop offset=".48" stop-color="#dff3ff"/><stop offset="1" stop-color="#ddffe8"/></linearGradient><linearGradient id="mane" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff78a9"/><stop offset=".25" stop-color="#ffc85c"/><stop offset=".5" stop-color="#64dca1"/><stop offset=".75" stop-color="#65bfff"/><stop offset="1" stop-color="#b67cff"/></linearGradient></defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<path d="M60 116c50-31 88-16 113 19 39-52 105-49 139 4 38-33 95-28 134 8" fill="none" stroke="#fff" stroke-width="42" stroke-linecap="round" opacity=".9"/>
+<g transform="translate(72 58)"><path d="M189 61l27-59 22 66" fill="#ffd45a" stroke="#8a5b43" stroke-width="7"/><path d="M104 135c-41-65 22-121 78-85 42-42 106-5 91 49 67 14 76 99 22 128 7 75-78 115-132 69-55 36-125-6-112-70-51-33-30-102 53-91z" fill="#fff" stroke="#76506b" stroke-width="8"/>
+<path d="M110 130c-34 2-63 28-64 61 25-9 45-1 62 16-6-33 2-58 27-76" fill="url(#mane)" stroke="#76506b" stroke-width="7"/>
+<ellipse cx="156" cy="153" rx="17" ry="23" fill="#35243c"/><ellipse cx="235" cy="153" rx="17" ry="23" fill="#35243c"/><circle cx="151" cy="146" r="6" fill="#fff"/><circle cx="230" cy="146" r="6" fill="#fff"/><ellipse cx="194" cy="188" rx="27" ry="18" fill="#ffd6e8"/><path d="M177 186c10 14 24 14 34 0" fill="none" stroke="#7e4e68" stroke-width="6" stroke-linecap="round"/><circle cx="126" cy="183" r="14" fill="#ffb4d0" opacity=".7"/><circle cx="262" cy="183" r="14" fill="#ffb4d0" opacity=".7"/>
+<g transform="translate(205 228)"><circle cx="52" cy="52" r="61" fill="#d88a43" stroke="#7a4a2b" stroke-width="8"/><circle cx="27" cy="31" r="9" fill="#5a3325"/><circle cx="70" cy="24" r="8" fill="#5a3325"/><circle cx="83" cy="67" r="10" fill="#5a3325"/><circle cx="38" cy="77" r="8" fill="#5a3325"/><circle cx="58" cy="51" r="7" fill="#5a3325"/></g>
+<path d="M150 280c36 25 65 27 93 9" fill="none" stroke="#76506b" stroke-width="12" stroke-linecap="round"/>
+</g>
+<g fill="#fff" opacity=".95"><path d="M72 310l8 18 18 8-18 8-8 18-8-18-18-8 18-8z"/><path d="M431 282l7 15 15 7-15 7-7 15-7-15-15-7 15-7z"/><circle cx="405" cy="105" r="8"/><circle cx="96" cy="101" r="7"/></g></svg>

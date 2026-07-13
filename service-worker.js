@@ -1,4 +1,4 @@
-const CACHE_NAME = 'keks-to-do-icon-fix-20260712-1';
+const CACHE_NAME = 'keks-to-do-unicorn-20260713-1';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,7 +9,8 @@ const APP_SHELL = [
   './icons/apple-touch-icon.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
-  './icons/favicon-64.png'
+  './icons/favicon-64.png',
+  './unicorn-icon.svg'
 ];
 
 self.addEventListener('install', event => {

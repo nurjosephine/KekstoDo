@@ -8,17 +8,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Keks-To-Do">
   <title>Keks-To-Do</title>
-  <link id="appManifest" rel="manifest" href="./manifest.webmanifest?v=20260712-1">
-  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260712-1">
-  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon.png?v=20260712-1">
-  <link id="appFavicon" rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png?v=20260712-1">
+  <link id="appManifest" rel="manifest" href="./manifest.webmanifest?v=20260713-unicorn">
+  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260713-unicorn">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon.png?v=20260713-unicorn">
+  <link id="appFavicon" rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png?v=20260713-unicorn">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div id="app" class="app-shell">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-cookie" aria-hidden="true">🍪</div>
+        <div class="brand-cookie" aria-hidden="true">🦄</div>
         <div>
           <h1>Keks-To-Do</h1>
         </div>
@@ -71,7 +71,7 @@
       </section>
 
       <section id="shopView" class="view">
-        <div class="section-heading"><h2>Keksshop</h2><p>Bezahle mit hart verdientem Gebäck.</p></div>
+        <div class="section-heading"><h2>Keksshop</h2><p>Bezahle mit hart verdientem Gebäck. Ein geheimnisvolles Theme wartet im Regenbogennebel.</p></div>
         <div class="shop-balance">Dein Guthaben: <strong>🍪 <span id="shopBalance">0</span></strong></div>
         <div id="shopGrid" class="card-grid"></div>
       </section>
@@ -94,7 +94,7 @@
       <div class="modal-header"><h2>Einstellungen</h2><button class="close-button" value="cancel" aria-label="Schließen">×</button></div>
       <div class="setting-row"><div><strong>Theme</strong><small>Ändert das gesamte Keksgewand.</small></div><select id="themeSelect"></select></div>
       <div class="setting-row"><div><strong>Sounds</strong><small>Knuspern und Erfolgsplopp.</small></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
-      <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Passt sich an dein Theme an. Ein bereits installiertes iPhone-Icon kann iOS nicht automatisch austauschen.</small></div><img id="appIconPreview" class="app-icon-preview" src="./apple-touch-icon.png?v=20260712-1" alt="Vorschau des App-Icons"></div>
+      <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Diese Einhorn-Edition verwendet ein festes flauschiges Einhorn-Icon. Ein bereits installiertes iPhone-Icon muss neu hinzugefügt werden.</small></div><img id="appIconPreview" class="app-icon-preview" src="./apple-touch-icon.png?v=20260713-unicorn" alt="Vorschau des App-Icons"></div>
       <button id="iconHelpButton" type="button" class="secondary-button full-width-button">🍪 iPhone-Icon aktualisieren</button>
       <div class="setting-actions">
         <button id="exportButton" type="button" class="secondary-button">💾 Backup exportieren</button>
@@ -123,6 +123,28 @@
     <button id="closeAchievementButton" class="primary-button">Weiter knuspern 🍪</button>
   </dialog>
 
+  <dialog id="unicornDiscoveryDialog" class="magic-modal">
+    <div class="rainbow-arc" aria-hidden="true"></div><div class="fluffy-unicorn" aria-hidden="true">🦄</div>
+    <p class="eyebrow">Ein geheimnisvoller Regenbogen erscheint …</p>
+    <h2>Einhornland entdeckt!</h2>
+    <p>Im Keksshop wartet jetzt das geheime Einhornland-Theme für 75 Kekse auf dich.</p>
+    <button id="closeUnicornDiscoveryButton" class="primary-button">Zum Regenbogen 🌈</button>
+  </dialog>
+  <dialog id="unicornWelcomeDialog" class="magic-modal">
+    <div class="rainbow-arc" aria-hidden="true"></div><div class="fluffy-unicorn gallop" aria-hidden="true">🦄</div>
+    <p class="eyebrow">Magischer Keks freigeschaltet!</p>
+    <h2>Willkommen im Einhornland!</h2>
+    <p>Wolken, Sterne und Regenbogenkrümel begleiten ab jetzt deine Aufgaben.</p>
+    <button id="closeUnicornWelcomeButton" class="primary-button">Losgaloppieren 🦄</button>
+  </dialog>
+  <dialog id="legendaryRideDialog" class="magic-modal legendary-modal">
+    <div class="legendary-pair" aria-hidden="true">👑🍪🦄</div>
+    <p class="eyebrow">Das seltenste Kekswunder</p>
+    <h2>Der Krümelkönig reitet!</h2>
+    <p>Selbst die Legenden konnten nicht glauben, dass jemand so viele Kekse sammelt …</p>
+    <button id="closeLegendaryRideButton" class="primary-button">Legende bestaunen ✨</button>
+  </dialog>
+  <div id="unicornCookieMoment" class="unicorn-cookie-moment" aria-hidden="true"><span>🦄</span><b>🍪</b><i>✨</i></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <input id="hiddenImport" type="file" accept=".keks,application/json" hidden>
   <script src="app.js" defer></script>

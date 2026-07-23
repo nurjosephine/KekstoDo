@@ -1,4 +1,4 @@
-const CACHE_NAME = 'keks-to-do-cookie-20260713-1';
+const CACHE_NAME = 'kekstodo-chicken-yard-v1';
 const APP_SHELL = [
   './',
   './index.html',

@@ -43,3 +43,95 @@ body.unicorn-theme .brand-cookie{animation:unicornFloat 2.6s ease-in-out infinit
 @keyframes unicornGallop{0%{transform:translateX(-180%) rotate(-10deg)}70%{transform:translateX(12%) rotate(5deg)}100%{transform:none}}
 .legendary-modal{border-color:#ffd34f;background:linear-gradient(145deg,#fff7cd,#fff,#f5e9ff);box-shadow:0 0 0 3px #ffd34f,0 30px 100px rgba(255,188,44,.35)}.legendary-pair{font-size:70px;animation:legendRide 1.5s ease-out}@keyframes legendRide{0%{transform:translateX(-160%) rotate(-8deg)}75%{transform:translateX(8%) rotate(3deg)}100%{transform:none}}
 .unicorn-cookie-moment{position:fixed;z-index:120;left:50%;top:48%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:3px;font-size:60px;opacity:0;pointer-events:none}.unicorn-cookie-moment b{font-size:42px}.unicorn-cookie-moment i{font-style:normal;font-size:30px}.unicorn-cookie-moment.show{animation:cookieThrow 1.45s ease-out}@keyframes cookieThrow{0%{opacity:0;transform:translate(-85%,-20%) scale(.7)}20%{opacity:1}55%{transform:translate(-40%,-95%) rotate(-12deg) scale(1.08)}100%{opacity:0;transform:translate(40%,-170%) rotate(18deg) scale(.85)}}
+
+
+/* Hühnerhof bei Nacht: deutlich mehr Huhn, deutlich weniger Keks */
+body.chicken-theme{
+  background-color:#111713;
+  background-image:
+    radial-gradient(circle at 12% 15%,rgba(242,189,63,.11) 0 2px,transparent 3px),
+    radial-gradient(circle at 75% 8%,rgba(255,247,219,.08) 0 1px,transparent 2px),
+    linear-gradient(160deg,#0f1511 0%,#172019 45%,#101612 100%);
+  background-attachment:fixed;
+}
+body.chicken-theme::before{
+  content:"🐔   🐣   🥚   🐔   🌾   🐥   🪶   🐔   🥚   🐣   🌾   🐔";
+  position:fixed;
+  left:-3vw;
+  right:-3vw;
+  bottom:78px;
+  z-index:0;
+  font-size:clamp(22px,4vw,38px);
+  letter-spacing:clamp(10px,3vw,34px);
+  opacity:.12;
+  white-space:nowrap;
+  pointer-events:none;
+  filter:grayscale(.12);
+}
+body.chicken-theme .app-shell{position:relative;z-index:1}
+body.chicken-theme .topbar{background:linear-gradient(color-mix(in srgb,var(--bg) 94%,transparent) 72%,transparent)}
+body.chicken-theme .brand-cookie{animation:chickenPeck 2.8s ease-in-out infinite;filter:drop-shadow(0 5px 8px rgba(0,0,0,.35))}
+@keyframes chickenPeck{0%,72%,100%{transform:none}78%{transform:rotate(8deg) translateY(3px)}84%{transform:rotate(-5deg) translateY(-1px)}}
+body.chicken-theme .week-toolbar h2::before{content:"🐔 ";}
+body.chicken-theme .week-toolbar h2::after{content:" 🐣";}
+body.chicken-theme .day-card{
+  position:relative;
+  border-color:rgba(242,189,63,.20);
+  box-shadow:0 18px 42px rgba(0,0,0,.33),inset 0 0 0 1px rgba(255,255,255,.02);
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.025),transparent 45%),
+    var(--surface);
+}
+body.chicken-theme .day-card::before{
+  content:"🐔";
+  position:absolute;
+  right:66px;
+  top:13px;
+  font-size:25px;
+  opacity:.88;
+  transform:rotate(-4deg);
+  pointer-events:none;
+}
+body.chicken-theme .day-card:nth-child(2n)::before{content:"🐣";transform:rotate(5deg)}
+body.chicken-theme .day-card:nth-child(3n)::before{content:"🐥";transform:none}
+body.chicken-theme .day-card::after{
+  content:"··· 🌾 · · 🪶 · · 🌾 ···";
+  display:block;
+  padding:0 16px 12px;
+  color:#d8b968;
+  font-size:13px;
+  letter-spacing:3px;
+  opacity:.52;
+  text-align:center;
+  pointer-events:none;
+}
+body.chicken-theme .day-dot{border-radius:55% 45% 52% 48%;background:#f8eee0;box-shadow:0 0 0 4px rgba(242,189,63,.18);transform:rotate(12deg)}
+body.chicken-theme .task-row{background:linear-gradient(135deg,#29372c,#233027);border-color:rgba(242,189,63,.14)}
+body.chicken-theme .task-check{border-radius:52% 48% 50% 50%;border-color:#ead9bd;background:#fbf1df;transform:scale(.92)}
+body.chicken-theme .task-check:checked{background:#f2bd3f;border-color:#f2bd3f}
+body.chicken-theme .task-check:checked::after{content:"🐥";font-size:18px;line-height:1;transform:translateY(-1px)}
+body.chicken-theme .inline-add input{background:#243128;border-color:rgba(242,189,63,.18)}
+body.chicken-theme .inline-add button{background:#f2bd3f}
+body.chicken-theme .empty-state{color:#d7cfad}
+body.chicken-theme .empty-cookie{animation:chickBob 1.8s ease-in-out infinite}
+@keyframes chickBob{50%{transform:translateY(-4px) rotate(4deg)}}
+body.chicken-theme .cookie-balance span{font-size:0}
+body.chicken-theme .cookie-balance span::after{content:"🥚";font-size:20px}
+body.chicken-theme .cookie-icon-button .cookie-drawing{
+  inset:9px 12px;
+  border-radius:52% 48% 46% 54%;
+  background:#f5ead7;
+  border-color:#b89a6a;
+  box-shadow:inset -3px -4px 0 rgba(121,86,45,.14);
+}
+body.chicken-theme .cookie-icon-button .cookie-drawing::before{display:none}
+body.chicken-theme .cookie-icon-button.delete-cookie::after{background:#ef3340}
+body.chicken-theme .nav-button[data-view="week"]::first-letter{font-size:0}
+body.chicken-theme .panel h3::before{content:"🐔 ";}
+body.chicken-theme .shop-balance strong::first-letter{font-size:0}
+body.chicken-theme .theme-swatch{position:relative;overflow:hidden}
+body.chicken-theme .theme-swatch::after{content:"🐔  🐣  🥚  🌾  🪶";position:absolute;inset:0;display:grid;place-items:center;font-size:23px;letter-spacing:7px;background:rgba(17,23,19,.38)}
+@media(max-width:759px){
+  body.chicken-theme::before{bottom:92px;font-size:24px;letter-spacing:14px}
+  body.chicken-theme .day-card::before{right:64px;top:15px;font-size:23px}
+}

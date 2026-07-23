@@ -9,7 +9,7 @@ const DAYS = [
 const THEMES = {
   'Dunkel':{emoji:'🌙',price:0,dark:true,bg:'#14161c',surface:'#1f222b',raised:'#2b2f3b',text:'#f4f5f9',muted:'#aab0bf',primary:'#ffc107',primaryText:'#2f2600',dangerBg:'#4b2b30',dangerText:'#ffaeb5',decoration:'✦'},
   'Keks':{emoji:'🍪',price:0,dark:false,bg:'#fff8e8',surface:'#fffffa',raised:'#f6e4c3',text:'#4b311b',muted:'#846548',primary:'#b56f2d',primaryText:'#fffaf1',dangerBg:'#ffe2da',dangerText:'#a43737',decoration:'🍪'},
-  'Hühner':{emoji:'🐔',price:50,dark:true,bg:'#181411',surface:'#2b231b',raised:'#3e3225',text:'#fff4dc',muted:'#cdb897',primary:'#f4b437',primaryText:'#3b2500',dangerBg:'#4f2b23',dangerText:'#ffb7a0',decoration:'🥚'},
+  'Hühner':{emoji:'🐔',price:50,dark:true,bg:'#111713',surface:'#1d2820',raised:'#2a382d',text:'#fff7db',muted:'#c8d1b5',primary:'#f2bd3f',primaryText:'#302300',dangerBg:'#512a28',dangerText:'#ffb6aa',decoration:'🐔 Küken, Eier, Federn und Körner'},
   'Herbst':{emoji:'🍂',price:25,dark:false,bg:'#fff2da',surface:'#fffbee',raised:'#f0d6ae',text:'#532c19',muted:'#8e5836',primary:'#d2691e',primaryText:'#fff9f0',dangerBg:'#fadaC5',dangerText:'#973d24',decoration:'🍁'},
   'Weihnachten':{emoji:'🎄',price:25,dark:true,bg:'#0d231d',surface:'#18372c',raised:'#254b3c',text:'#f8f7e8',muted:'#bed3c3',primary:'#dc3737',primaryText:'#fff',dangerBg:'#52272b',dangerText:'#ffbabe',decoration:'❄'},
   'Frühling':{emoji:'🌸',price:25,dark:false,bg:'#f4fdee',surface:'#fff',raised:'#e2f4da',text:'#324f32',muted:'#688963',primary:'#ef7ea4',primaryText:'#421327',dangerBg:'#ffe1e7',dangerText:'#a33759',decoration:'🌼'},
@@ -140,6 +140,7 @@ function applyTheme(name){
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
   document.body.classList.toggle('unicorn-theme',data.State.Theme==='Einhornland');
+  document.body.classList.toggle('chicken-theme',data.State.Theme==='Hühner');
   applyThemeIcon(data.State.Theme);
   if(!data.State.ThemeFirstUsed[name]) data.State.ThemeFirstUsed[name]=new Date().toISOString();
   saveData();
@@ -152,6 +153,7 @@ function renderAll(){
 }
 function renderHeader(){
   $('#cookieBalance').textContent=data.State.CookieBalance; $('#shopBalance').textContent=data.State.CookieBalance;
+  $('#brandMascot').textContent=data.State.Theme==='Einhornland'?'🦄':data.State.Theme==='Hühner'?'🐔':'🍪';
   const monday=currentMonday(), sunday=new Date(monday); sunday.setDate(monday.getDate()+6);
   $('#weekRange').textContent=`${monday.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})} bis ${sunday.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})}`;
 }
@@ -162,13 +164,13 @@ function renderDays(){
     return `<article class="day-card ${activeDay===d.name?'mobile-active':''}" style="--day:${d.color}" data-day-card="${d.name}">
       <header class="day-card-header"><div class="day-title-wrap"><span class="day-dot"></span><div><h3>${d.name}</h3><span class="day-count">${done} von ${items.length} erledigt</span></div></div>
       <div class="day-actions"><button class="cookie-icon-button delete-cookie" data-clear-day="${d.name}" title="Alle Aufgaben löschen" aria-label="Alle Aufgaben von ${d.name} löschen"><span class="cookie-drawing"></span></button></div></header>
-      ${items.length?`<ul class="task-list">${items.map(taskRow).join('')}</ul>`:`<div class="empty-state"><span class="empty-cookie">🍪</span>Noch keine Aufgaben. Das Blech ist leer.</div>`}
+      ${items.length?`<ul class="task-list">${items.map(taskRow).join('')}</ul>`:`<div class="empty-state"><span class="empty-cookie">${data.State.Theme==='Hühner'?'🐣':'🍪'}</span>${data.State.Theme==='Hühner'?'Noch keine Aufgaben. Das Nest ist leer.':'Noch keine Aufgaben. Das Blech ist leer.'}</div>`}
       <form class="inline-add" data-add-form="${d.name}"><input maxlength="180" placeholder="Neue Aufgabe für ${d.name} …" aria-label="Neue Aufgabe für ${d.name}"><button aria-label="Aufgabe hinzufügen">＋</button></form>
     </article>`;
   }).join('');
 }
 function taskRow(i){
-  let meta=''; if(i.IsCompleted&&i.CompletedAt) meta=i.CookieAwarded?'Pünktlich erledigt 🍪':'Erledigt, aber ohne Belohnungskeks';
+  let meta=''; if(i.IsCompleted&&i.CompletedAt) meta=i.CookieAwarded?(data.State.Theme==='Hühner'?'Pünktlich erledigt 🥚':'Pünktlich erledigt 🍪'):'Erledigt, aber ohne Belohnungskeks';
   return `<li class="task-row ${i.IsCompleted?'completed':''}" data-id="${i.Id}"><input class="task-check" type="checkbox" ${i.IsCompleted?'checked':''} aria-label="Aufgabe erledigt" style="--day:${DAYS.find(d=>d.name===i.Day)?.color}"><div class="task-text">${escapeHtml(i.Text)}${meta?`<span class="task-meta">${meta}</span>`:''}</div><button class="delete-task" title="Aufgabe löschen" aria-label="Aufgabe löschen">🗑️</button></li>`;
 }
 function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
@@ -249,7 +251,7 @@ function renderAchievements(){
 }
 function renderShop(){
   $('#shopBalance').textContent=data.State.CookieBalance;
-  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
+  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${name==='Hühner'?'Dunkler Hühnerhof mit vielen Hühnern, Küken, Eiern, Federn und Körnerspuren.':`${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.`}</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
 }
 function buyOrUseTheme(name){
   const t=THEMES[name]; if(!t)return;

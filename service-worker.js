@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-chicken-yard-v1';
+const CACHE_NAME = 'kekstodo-v3-living-themes-20260803';
 const APP_SHELL = [
   './',
   './index.html',

@@ -139,8 +139,14 @@ function applyTheme(name){
   for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,raised:t.raised,text:t.text,muted:t.muted,primary:t.primary,primaryText:t.primaryText,dangerBg:t.dangerBg,dangerText:t.dangerText})) r.setProperty(`--${k}`,v);
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
-  document.body.classList.toggle('unicorn-theme',data.State.Theme==='Einhornland');
-  document.body.classList.toggle('chicken-theme',data.State.Theme==='Hühner');
+  const themeClasses=['theme-dark','theme-cookie','chicken-theme','theme-autumn','theme-christmas','theme-spring','theme-halloween','theme-pride','unicorn-theme'];
+  document.body.classList.remove(...themeClasses);
+  const classByTheme={
+    'Dunkel':'theme-dark','Keks':'theme-cookie','Hühner':'chicken-theme','Herbst':'theme-autumn',
+    'Weihnachten':'theme-christmas','Frühling':'theme-spring','Halloween':'theme-halloween',
+    'Pride':'theme-pride','Einhornland':'unicorn-theme'
+  };
+  document.body.classList.add(classByTheme[data.State.Theme]||'theme-dark');
   applyThemeIcon(data.State.Theme);
   if(!data.State.ThemeFirstUsed[name]) data.State.ThemeFirstUsed[name]=new Date().toISOString();
   saveData();
@@ -164,11 +170,25 @@ function renderDays(){
     return `<article class="day-card ${activeDay===d.name?'mobile-active':''}" style="--day:${d.color}" data-day-card="${d.name}">
       <header class="day-card-header"><div class="day-title-wrap"><span class="day-dot"></span><div><h3>${d.name}</h3><span class="day-count">${done} von ${items.length} erledigt</span></div></div>
       <div class="day-actions"><button class="cookie-icon-button delete-cookie" data-clear-day="${d.name}" title="Alle Aufgaben löschen" aria-label="Alle Aufgaben von ${d.name} löschen"><span class="cookie-drawing"></span></button></div></header>
-      ${items.length?`<ul class="task-list">${items.map(taskRow).join('')}</ul>`:`<div class="empty-state"><span class="empty-cookie">${data.State.Theme==='Hühner'?'🐣':'🍪'}</span>${data.State.Theme==='Hühner'?'Noch keine Aufgaben. Das Nest ist leer.':'Noch keine Aufgaben. Das Blech ist leer.'}</div>`}
+      ${items.length?`<ul class="task-list">${items.map(taskRow).join('')}</ul>`:`<div class="empty-state"><span class="empty-cookie">${themeEmptyState().icon}</span>${themeEmptyState().text}</div>`}
       <form class="inline-add" data-add-form="${d.name}"><input maxlength="180" placeholder="Neue Aufgabe für ${d.name} …" aria-label="Neue Aufgabe für ${d.name}"><button aria-label="Aufgabe hinzufügen">＋</button></form>
     </article>`;
   }).join('');
 }
+function themeEmptyState(){
+  return ({
+    'Hühner':{icon:'🐣',text:'Noch keine Aufgaben. Das Nest ist leer.'},
+    'Herbst':{icon:'🍄',text:'Noch keine Aufgaben zwischen den Blättern.'},
+    'Weihnachten':{icon:'🎁',text:'Noch keine Aufgaben unter dem Baum.'},
+    'Frühling':{icon:'🦋',text:'Noch keine Aufgaben auf der Blumenwiese.'},
+    'Halloween':{icon:'👻',text:'Noch keine Aufgaben in der Spuknacht.'},
+    'Pride':{icon:'🌈',text:'Noch keine Aufgaben im Farbenmeer.'},
+    'Einhornland':{icon:'🦄',text:'Noch keine Aufgaben im Einhornland.'},
+    'Keks':{icon:'🍪',text:'Noch keine Aufgaben. Das Blech ist leer.'},
+    'Dunkel':{icon:'🌙',text:'Noch keine Aufgaben in der Nacht.'}
+  })[data.State.Theme]||{icon:'🍪',text:'Noch keine Aufgaben.'};
+}
+
 function taskRow(i){
   let meta=''; if(i.IsCompleted&&i.CompletedAt) meta=i.CookieAwarded?(data.State.Theme==='Hühner'?'Pünktlich erledigt 🥚':'Pünktlich erledigt 🍪'):'Erledigt, aber ohne Belohnungskeks';
   return `<li class="task-row ${i.IsCompleted?'completed':''}" data-id="${i.Id}"><input class="task-check" type="checkbox" ${i.IsCompleted?'checked':''} aria-label="Aufgabe erledigt" style="--day:${DAYS.find(d=>d.name===i.Day)?.color}"><div class="task-text">${escapeHtml(i.Text)}${meta?`<span class="task-meta">${meta}</span>`:''}</div><button class="delete-task" title="Aufgabe löschen" aria-label="Aufgabe löschen">🗑️</button></li>`;
@@ -194,12 +214,34 @@ function toggleTask(id,checked){
         data.State.CookieBalance++; data.State.LifetimeCookies++; data.State.AllTimeOnTimeCompleted++;
         if(now.getMonth()===11) data.State.ChristmasDecemberCookies++;
         if(data.State.Theme==='Einhornland'){ showUnicornCookie(); playSound('unicorn'); }
-        else { showToast('+1 Belohnungskeks 🍪'); playSound('cookie'); }
-      } else showToast('Erledigt! Heute leider ohne Belohnungskeks.');
+        else { showToast(themeCompletionMessage(true)); playThemeEffect(); playSound('cookie'); }
+      } else showToast(themeCompletionMessage(false));
     }
   }else item.CompletedAt=null;
   saveData(); checkAchievements(); renderAll();
 }
+function themeCompletionMessage(onTime){
+  const messages={
+    'Dunkel':onTime?'+1 Belohnungskeks 🍪':'Erledigt! Heute leider ohne Belohnungskeks.',
+    'Keks':onTime?'Knusper! Ein Keks mehr in der Dose 🍪':'Erledigt, aber der Ofen war heute nicht zuständig.',
+    'Hühner':onTime?'🥚 Ein Ei mehr im Nest!':'🐔 Erledigt, aber heute ohne Belohnungsei.',
+    'Herbst':onTime?'🍁 Ein goldenes Blatt gesammelt!':'🍂 Erledigt, aber das Blatt fiel am falschen Tag.',
+    'Weihnachten':onTime?'🎁 Ein Geschenk mehr unter dem Baum!':'❄️ Erledigt, aber heute ohne Geschenk.',
+    'Frühling':onTime?'🌸 Eine neue Blüte ist aufgegangen!':'🌱 Erledigt, aber heute ohne Blütenkeks.',
+    'Halloween':onTime?'🎃 Der Kürbis nickt zufrieden!':'👻 Erledigt, aber der Geist hat den Keks versteckt.',
+    'Pride':onTime?'🌈 Farben machen den Tag heller!':'💖 Erledigt, aber heute ohne Regenbogenkeks.',
+    'Einhornland':onTime?'+1 magischer Belohnungskeks 🦄🍪':'✨ Erledigt, aber die Magie kam am falschen Tag.'
+  };
+  return messages[data.State.Theme]||messages.Dunkel;
+}
+function playThemeEffect(){
+  document.body.classList.remove('theme-reward-flash'); void document.body.offsetWidth; document.body.classList.add('theme-reward-flash');
+  setTimeout(()=>document.body.classList.remove('theme-reward-flash'),900);
+}
+function themeGreeting(name){
+  return ({'Hühner':'🐔 Willkommen auf dem Hühnerhof!','Herbst':'🍂 Willkommen im goldenen Herbst!','Weihnachten':'🎄 Willkommen im Weihnachtszauber!','Frühling':'🌸 Der Frühling ist da!','Halloween':'🎃 Willkommen in der Spuknacht!','Pride':'🌈 Willkommen im Farbenmeer!','Einhornland':'🦄 Willkommen im Einhornland!','Keks':'🍪 Willkommen zurück in der Keksdose!','Dunkel':'🌙 Dunkelmodus aktiviert.'})[name]||`${name} aktiviert.`;
+}
+
 function updateDailyStreak(now){
   const today=dateOnly(now), last=data.State.LastActiveDate?dateOnly(data.State.LastActiveDate):null;
   if(last===today)return;
@@ -255,10 +297,10 @@ function renderShop(){
 }
 function buyOrUseTheme(name){
   const t=THEMES[name]; if(!t)return;
-  if(data.State.UnlockedThemes.includes(name)){data.State.Theme=name;applyTheme(name);renderAll();showToast(`${t.emoji} ${name}-Theme aktiviert.`);return;}
+  if(data.State.UnlockedThemes.includes(name)){data.State.Theme=name;applyTheme(name);renderAll();showToast(themeGreeting(name));playThemeEffect();return;}
   if(data.State.CookieBalance<t.price){showToast(`Dir fehlen ${t.price-data.State.CookieBalance} Kekse.`);return;}
   data.State.CookieBalance-=t.price;data.State.UnlockedThemes.push(name);data.State.Theme=name;if(!data.State.ThemeFirstUsed[name])data.State.ThemeFirstUsed[name]=new Date().toISOString();saveData();checkAchievements();renderAll();
-  if(name==='Einhornland') showUnicornWelcome(); else showToast(`${t.emoji} ${name} freigeschaltet!`);
+  if(name==='Einhornland') showUnicornWelcome(); else { showToast(themeGreeting(name)); playThemeEffect(); }
   playSound(name==='Einhornland'?'unicorn':'achievement');
 }
 function discoverUnicornIfReady(){

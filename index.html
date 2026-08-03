@@ -95,6 +95,7 @@
       <div class="setting-row"><div><strong>Theme</strong><small>Ändert das gesamte Keksgewand.</small></div><select id="themeSelect"></select></div>
       <div class="setting-row"><div><strong>Sounds</strong><small>Knuspern und Erfolgsplopp.</small></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
       <div class="setting-row"><div><strong>Animationen</strong><small>Aus, dezent bei Aktionen oder vollständig lebendig.</small></div><select id="animationModeSelect"><option value="off">Aus</option><option value="subtle">Dezent (Empfehlung)</option><option value="full">Voll</option></select></div>
+      <div class="setting-row"><div><strong>Lustige Kommentare</strong><small>Theme-Sprüche bleiben etwa 10 Sekunden sichtbar.</small></div><select id="commentModeSelect"><option value="off">Aus</option><option value="rare">Selten (Empfehlung)</option><option value="frequent">Häufig</option></select></div>
       <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Das Home-Bildschirm-Icon bleibt immer der bunte Keks. Nur innerhalb der App erscheint im Einhornland-Theme ein Einhorn.</small></div><img id="appIconPreview" class="app-icon-preview" src="./apple-touch-icon.png?v=20260723-chicken-yard-1" alt="Vorschau des App-Icons"></div>
       <button id="iconHelpButton" type="button" class="secondary-button full-width-button">🍪 iPhone-Icon aktualisieren</button>
       <div class="setting-actions">
@@ -146,6 +147,7 @@
     <button id="closeLegendaryRideButton" class="primary-button">Legende bestaunen ✨</button>
   </dialog>
   <div id="unicornCookieMoment" class="unicorn-cookie-moment" aria-hidden="true"><span>🦄</span><b>🍪</b><i>✨</i></div>
+  <div id="commentBubble" class="comment-bubble" role="status" aria-live="polite"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <input id="hiddenImport" type="file" accept=".keks,application/json" hidden>
   <script src="app.js" defer></script>

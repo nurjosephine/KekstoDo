@@ -342,3 +342,36 @@ body:not(.animations-full).theme-pride::after,
 body:not(.animations-full).unicorn-theme::before {
   animation: none !important;
 }
+
+
+/* Lustige Theme-Kommentare 3.2 */
+.comment-bubble{
+  position:fixed;z-index:99;right:18px;bottom:92px;
+  width:min(360px,calc(100% - 36px));
+  padding:15px 18px 15px 54px;border:1px solid var(--border);
+  border-radius:20px;background:var(--surface);color:var(--text);
+  box-shadow:0 18px 55px rgba(0,0,0,.28);
+  font-weight:800;line-height:1.42;
+  opacity:0;transform:translateY(18px) scale(.97);pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;
+}
+.comment-bubble::before{
+  content:"💬";position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  font-size:25px;
+}
+.comment-bubble::after{
+  content:"";position:absolute;right:26px;bottom:-9px;width:16px;height:16px;
+  background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  transform:rotate(45deg);
+}
+.comment-bubble.show{opacity:1;transform:none}
+body.chicken-theme .comment-bubble::before{content:"🐔"}
+body.theme-autumn .comment-bubble::before{content:"🍂"}
+body.theme-christmas .comment-bubble::before{content:"🎄"}
+body.theme-spring .comment-bubble::before{content:"🌸"}
+body.theme-halloween .comment-bubble::before{content:"👻"}
+body.theme-pride .comment-bubble::before{content:"🌈"}
+body.unicorn-theme .comment-bubble::before{content:"🦄"}
+body.theme-cookie .comment-bubble::before{content:"🍪"}
+body.theme-dark .comment-bubble::before{content:"🌙"}
+@media(max-width:759px){.comment-bubble{left:14px;right:14px;bottom:88px;width:auto}}

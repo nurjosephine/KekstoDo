@@ -67,7 +67,7 @@ const defaultState = () => ({
   Theme:'Dunkel', LastWeeklyResetMonday:null, LastWeeklyResetSunday:null, CookieBalance:0, LifetimeCookies:0, AllTimeCompleted:0,
   AllTimeOnTimeCompleted:0, BestWeekCompleted:0, WeeksReset:0, PerfectWeeks:0, ConsecutivePerfectMondays:0,
   ConsecutiveNoForgottenWeeks:0, EarlyTasks:0, ChickenThemeCompleted:0, ChristmasDecemberCookies:0,
-  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true, AnimationMode:'subtle',
+  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true, AnimationMode:'subtle', CommentMode:'rare', CommentCompletionCounter:0,
   UnlockedThemes:['Dunkel','Keks'], UnlockedAchievements:[], ThemeFirstUsed:{}, WeekdayCompleted:{}, WeeklyHistory:[],
   UnicornThemeCompleted:0, UnicornDiscovered:false, UnicornDiscoveryShown:false, LegendaryRideShown:false
 });
@@ -99,6 +99,8 @@ function normalizePackage(pkg){
   state.UnlockedThemes=[...new Set(['Dunkel','Keks',...state.UnlockedThemes])];
   state.ThemeFirstUsed=state.ThemeFirstUsed||{}; state.WeekdayCompleted=state.WeekdayCompleted||{}; state.WeeklyHistory=state.WeeklyHistory||[];
   if(!['off','subtle','full'].includes(state.AnimationMode)) state.AnimationMode='subtle';
+  if(!['off','rare','frequent'].includes(state.CommentMode)) state.CommentMode='rare';
+  state.CommentCompletionCounter=Number(state.CommentCompletionCounter)||0;
   const items=(pkg.Items||pkg.items||[]).map(i=>({
     Id:i.Id||i.id||uuid(), Day:i.Day||i.day||'Montag', Text:i.Text||i.text||'', IsCompleted:!!(i.IsCompleted??i.isCompleted),
     CreatedAt:i.CreatedAt||i.createdAt||new Date().toISOString(), CompletedAt:i.CompletedAt||i.completedAt||null,
@@ -198,6 +200,130 @@ function themeEmptyState(){
   })[data.State.Theme]||{icon:'🍪',text:'Noch keine Aufgaben.'};
 }
 
+
+const THEME_COMMENTS = {
+  'Dunkel':[
+    'Die Nachtwache meldet: Aufgabe verschwunden. Sehr verdächtig. 🌙',
+    'Leise erledigt. Nicht einmal der Mond hat etwas bemerkt.',
+    'Eine Aufgabe weniger im nächtlichen Aktennebel.'
+  ],
+  'Keks':[
+    'Aufgabe verputzt. Krümel fachgerecht entsorgt. 🍪',
+    'Das Kekskonto nickt anerkennend.',
+    'Knusprig erledigt. Der TÜV fürs Keksblech ist zufrieden.',
+    'Diese Aufgabe wurde erfolgreich weggenascht.'
+  ],
+  'Hühner':[
+    'Lord Krähibalt hat die Erledigung lautstark genehmigt. 🐔',
+    'Ein Ei mehr im Nest. Niemand weiß genau, warum.',
+    'Die Hühnerhofkontrolle meldet: alles ordnungsgemäß weggepickt.',
+    'Ein Küken hat kurz applaudiert und ist dann in die falsche Richtung gelaufen.'
+  ],
+  'Herbst':[
+    'Diese Aufgabe darf jetzt zu den Blättern auf den Boden. 🍂',
+    'Erledigt. Zeit für Tee und übertriebene Gemütlichkeit.',
+    'Der Herbstwind hat die Aufgabe aus der Liste geweht.',
+    'Ein Pilz wäre beeindruckt. Vermutlich.'
+  ],
+  'Weihnachten':[
+    'Ho ho erledigt! 🎄',
+    'Eine Aufgabe weniger auf der Liste des Weihnachtsmanns.',
+    'Das kommt unter den Baum der Produktivität.',
+    'Ein Wichtel hat es geprüft. Es gilt als erledigt.'
+  ],
+  'Frühling':[
+    'Plopp, da ist eine Produktivitätsblüte aufgegangen. 🌸',
+    'Die Bienen sind beeindruckt. Vermutlich.',
+    'Eine Aufgabe weniger, eine Blüte mehr.',
+    'Der Schmetterling hat kurz genickt. Das zählt als Abnahme.'
+  ],
+  'Halloween':[
+    'Die Aufgabe wurde ins Jenseits befördert. 👻',
+    'Der Kürbis nickt. Das ist vermutlich ein gutes Zeichen.',
+    'Ein Geist hat die Aufgabe abgeholt. Rückgabe ausgeschlossen.',
+    'Erledigt. Selbst die Fledermäuse sind kurz still geworden.'
+  ],
+  'Pride':[
+    'Erledigt und dabei hervorragend ausgesehen. 🌈',
+    'Diese Aufgabe ist jetzt offiziell farblos vor Neid.',
+    'Ein Regenbogen hat die Erledigung gegengezeichnet.',
+    'Bunt, brillant und von der Liste verschwunden.'
+  ],
+  'Einhornland':[
+    'Magisch erledigt. Physikalisch nicht erklärbar. 🦄',
+    'Das Einhorn hat Glitzer draufgeworfen. Damit ist es offiziell.',
+    'Eine Aufgabe weniger, drei Funkelsterne mehr.',
+    'Der Rat der Einhörner bestätigt die Erledigung einstimmig.'
+  ]
+};
+
+const SPECIAL_COMMENTS = {
+  first: {
+    'Dunkel':'Erste Aufgabe des Tages erledigt. Die Nacht kann einpacken. 🌙',
+    'Keks':'Der erste Tageskeks ist im Ofen. Jetzt läuft die Produktion. 🍪',
+    'Hühner':'Das erste Ei des Tages liegt im Nest. Lord Krähibalt verkündet es bereits im ganzen Landkreis. 🥚',
+    'Herbst':'Das erste Blatt des Tages ist gefallen. Sehr produktiv. 🍂',
+    'Weihnachten':'Das erste Geschenk des Tages ist verpackt. 🎁',
+    'Frühling':'Die erste Produktivitätsblüte des Tages ist offen. 🌸',
+    'Halloween':'Das erste Tagesopfer wurde von der Liste geholt. 🎃',
+    'Pride':'Der Tag startet direkt in voller Farbe. 🌈',
+    'Einhornland':'Die erste Portion Tagesmagie wurde freigesetzt. ✨'
+  },
+  dayComplete: {
+    'Dunkel':'Diese Tagesliste ist leer. Selbst die Schatten finden nichts mehr.',
+    'Keks':'Blech leer! Sämtliche Aufgaben wurden restlos verkrümelt. 🍪',
+    'Hühner':'Tagesstall sauber! Die Hühner übernehmen ab hier wieder das Chaos. 🐔',
+    'Herbst':'Alles erledigt. Jetzt darfst du dich dekorativ unter eine Decke legen. 🍂',
+    'Weihnachten':'Tagesliste leer. Der Weihnachtsmann kann Feierabend beantragen. 🎄',
+    'Frühling':'Der ganze Tagesgarten blüht. Keine offene Aufgabe mehr. 🌷',
+    'Halloween':'Die Tagesliste ist ausgestorben. Wortwörtlich fast. 👻',
+    'Pride':'Kompletter Tag erledigt. Das verdient einmal den ganzen Regenbogen. 🌈',
+    'Einhornland':'Der Tag ist vollständig verzaubert und abgeschlossen. 🦄✨'
+  },
+  streak: {
+    'Dunkel':'Mehrere Aufgaben am Stück. Die Nachtwache wird langsam nervös.',
+    'Keks':'Du räumst hier gerade Aufgaben weg wie eine hungrige Krümelwalze. 🍪',
+    'Hühner':'Die Aufgaben fallen schneller als Körner beim Füttern. 🐔',
+    'Herbst':'Produktivitätssturm! Die Aufgaben fallen wie Herbstlaub.',
+    'Weihnachten':'Das ist kein Abarbeiten mehr, das ist Wichtel-Fließbandbetrieb. 🎄',
+    'Frühling':'Hier sprießt die Produktivität gerade völlig unkontrolliert. 🌸',
+    'Halloween':'Eine ganze Aufgabenserie ist spurlos verschwunden. Unheimlich effizient.',
+    'Pride':'Diese Serie leuchtet inzwischen heller als der Regenbogen. 🌈',
+    'Einhornland':'Eine magische Serie! Das Einhorn beantragt zusätzliches Glitzerbudget. 🦄'
+  }
+};
+
+let commentTimer;
+function showComment(text){
+  const el=$('#commentBubble');
+  if(!el||!text) return;
+  el.textContent=text;
+  el.classList.add('show');
+  clearTimeout(commentTimer);
+  commentTimer=setTimeout(()=>el.classList.remove('show'),10000);
+}
+function completedTodayCount(now=new Date()){
+  const today=dateOnly(now);
+  return data.Items.filter(i=>i.IsCompleted&&i.CompletedAt&&dateOnly(i.CompletedAt)===today).length;
+}
+function chooseTaskComment(item,now){
+  const mode=data.State.CommentMode||'rare';
+  if(mode==='off') return null;
+  data.State.CommentCompletionCounter=(data.State.CommentCompletionCounter||0)+1;
+  const dayItems=data.Items.filter(i=>i.Day===item.Day);
+  const dayComplete=dayItems.length>0&&dayItems.every(i=>i.IsCompleted);
+  const firstToday=completedTodayCount(now)===1;
+  const streak=data.State.CommentCompletionCounter%5===0;
+  const specialChance=mode==='frequent'?0.9:0.62;
+  if(dayComplete&&Math.random()<specialChance) return SPECIAL_COMMENTS.dayComplete[data.State.Theme];
+  if(firstToday&&Math.random()<specialChance) return SPECIAL_COMMENTS.first[data.State.Theme];
+  if(streak&&Math.random()<specialChance) return SPECIAL_COMMENTS.streak[data.State.Theme];
+  const chance=mode==='frequent'?0.68:0.24;
+  if(Math.random()>chance) return null;
+  const pool=THEME_COMMENTS[data.State.Theme]||THEME_COMMENTS.Keks;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
 function taskRow(i){
   let meta=''; if(i.IsCompleted&&i.CompletedAt) meta=i.CookieAwarded?(data.State.Theme==='Hühner'?'Pünktlich erledigt 🥚':'Pünktlich erledigt 🍪'):'Erledigt, aber ohne Belohnungskeks';
   return `<li class="task-row ${i.IsCompleted?'completed':''}" data-id="${i.Id}"><input class="task-check" type="checkbox" ${i.IsCompleted?'checked':''} aria-label="Aufgabe erledigt" style="--day:${DAYS.find(d=>d.name===i.Day)?.color}"><div class="task-text">${escapeHtml(i.Text)}${meta?`<span class="task-meta">${meta}</span>`:''}</div><button class="delete-task" title="Aufgabe löschen" aria-label="Aufgabe löschen">🗑️</button></li>`;
@@ -227,7 +353,9 @@ function toggleTask(id,checked){
       } else showToast(themeCompletionMessage(false));
     }
   }else item.CompletedAt=null;
+  const comment=checked?chooseTaskComment(item,new Date(item.CompletedAt)):null;
   saveData(); checkAchievements(); renderAll();
+  if(comment) setTimeout(()=>showComment(comment),180);
 }
 function themeCompletionMessage(onTime){
   const messages={
@@ -347,6 +475,7 @@ function renderSettings(){
   $('#themeSelect').innerHTML=data.State.UnlockedThemes.filter(t=>THEMES[t]).map(t=>`<option ${t===data.State.Theme?'selected':''}>${THEMES[t].emoji} ${t}</option>`).join('');
   $('#soundToggle').checked=data.State.SoundsEnabled;
   $('#animationModeSelect').value=data.State.AnimationMode||'subtle';
+  $('#commentModeSelect').value=data.State.CommentMode||'rare';
 }
 
 function exportBackup(){
@@ -385,6 +514,7 @@ function bindEvents(){
   $('#themeSelect').onchange=e=>{const name=e.target.value.replace(/^\S+\s/,'');data.State.Theme=name;applyTheme(name);renderAll();};
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};
   $('#animationModeSelect').onchange=e=>{data.State.AnimationMode=e.target.value;applyAnimationMode();saveData();showToast(e.target.value==='off'?'Animationen ausgeschaltet.':e.target.value==='subtle'?'Dezente Animationen aktiviert.':'Volle Themenanimationen aktiviert.');};
+  $('#commentModeSelect').onchange=e=>{data.State.CommentMode=e.target.value;saveData();showToast(e.target.value==='off'?'Lustige Kommentare ausgeschaltet.':e.target.value==='rare'?'Gelegentliche Kommentare aktiviert.':'Häufige Kommentare aktiviert.');};
   $('#iconHelpButton').onclick=()=>showToast('Das iPhone-Icon ist immer der bunte Keks. Zum Aktualisieren: altes Symbol löschen und die App in Safari erneut zum Home-Bildschirm hinzufügen.');
   $('#exportButton').onclick=exportBackup; $('#importInput').onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';};
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);

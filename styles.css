@@ -295,3 +295,50 @@ body.unicorn-theme .week-toolbar h2::before{content:"🦄 ";}body.unicorn-theme 
   body.theme-christmas::before{top:76px;letter-spacing:5px;font-size:12px}
   body.theme-halloween::before{font-size:20px;letter-spacing:9px}
 }
+
+
+/* Animationssteuerung 3.1
+   Standard: "Dezent". Dauerhafte Bewegungen ruhen, kurze Rückmeldungen bleiben erhalten. */
+body.animations-subtle,
+body.animations-subtle::before,
+body.animations-subtle::after,
+body.animations-subtle .brand-cookie,
+body.animations-subtle .empty-cookie,
+body.animations-subtle .primary-button {
+  animation: none !important;
+}
+
+/* Die Pride-Fläche bleibt in "Dezent" farbenfroh, aber still. */
+body.animations-subtle.theme-pride {
+  background-position: 50% 50% !important;
+}
+
+/* Ohne Animationen bleibt die App vollständig ruhig. */
+body.animations-off,
+body.animations-off *,
+body.animations-off *::before,
+body.animations-off *::after,
+body.animations-off::before,
+body.animations-off::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+body.animations-off .confetti-layer,
+body.animations-off .unicorn-cookie-moment {
+  display: none !important;
+}
+
+/* Nur "Voll" darf die dauerhaft bewegten Themenwelten abspielen. */
+body:not(.animations-full).theme-autumn::before,
+body:not(.animations-full).theme-autumn::after,
+body:not(.animations-full).theme-christmas::before,
+body:not(.animations-full).theme-christmas::after,
+body:not(.animations-full).theme-spring::after,
+body:not(.animations-full).theme-halloween::before,
+body:not(.animations-full).theme-halloween::after,
+body:not(.animations-full).theme-pride::before,
+body:not(.animations-full).theme-pride::after,
+body:not(.animations-full).unicorn-theme::before {
+  animation: none !important;
+}

@@ -67,7 +67,7 @@ const defaultState = () => ({
   Theme:'Dunkel', LastWeeklyResetMonday:null, LastWeeklyResetSunday:null, CookieBalance:0, LifetimeCookies:0, AllTimeCompleted:0,
   AllTimeOnTimeCompleted:0, BestWeekCompleted:0, WeeksReset:0, PerfectWeeks:0, ConsecutivePerfectMondays:0,
   ConsecutiveNoForgottenWeeks:0, EarlyTasks:0, ChickenThemeCompleted:0, ChristmasDecemberCookies:0,
-  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true,
+  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true, AnimationMode:'subtle',
   UnlockedThemes:['Dunkel','Keks'], UnlockedAchievements:[], ThemeFirstUsed:{}, WeekdayCompleted:{}, WeeklyHistory:[],
   UnicornThemeCompleted:0, UnicornDiscovered:false, UnicornDiscoveryShown:false, LegendaryRideShown:false
 });
@@ -98,6 +98,7 @@ function normalizePackage(pkg){
   for(const key of ['UnlockedThemes','UnlockedAchievements']) state[key]=[...new Set(state[key]||[])];
   state.UnlockedThemes=[...new Set(['Dunkel','Keks',...state.UnlockedThemes])];
   state.ThemeFirstUsed=state.ThemeFirstUsed||{}; state.WeekdayCompleted=state.WeekdayCompleted||{}; state.WeeklyHistory=state.WeeklyHistory||[];
+  if(!['off','subtle','full'].includes(state.AnimationMode)) state.AnimationMode='subtle';
   const items=(pkg.Items||pkg.items||[]).map(i=>({
     Id:i.Id||i.id||uuid(), Day:i.Day||i.day||'Montag', Text:i.Text||i.text||'', IsCompleted:!!(i.IsCompleted??i.isCompleted),
     CreatedAt:i.CreatedAt||i.createdAt||new Date().toISOString(), CompletedAt:i.CompletedAt||i.completedAt||null,
@@ -133,6 +134,13 @@ function weeklyResetIfNeeded(){
   data.Items=[]; data.State.LastWeeklyResetMonday=iso(monday); saveData(); checkAchievements(); showToast('Neue Woche, frisches Keksblech! 🍪');
 }
 
+function applyAnimationMode(){
+  const mode=['off','subtle','full'].includes(data.State.AnimationMode)?data.State.AnimationMode:'subtle';
+  data.State.AnimationMode=mode;
+  document.body.classList.remove('animations-off','animations-subtle','animations-full');
+  document.body.classList.add(`animations-${mode}`);
+}
+
 function applyTheme(name){
   const t=THEMES[name]||THEMES.Dunkel; data.State.Theme=name in THEMES?name:'Dunkel';
   const r=document.documentElement.style;
@@ -147,6 +155,7 @@ function applyTheme(name){
     'Pride':'theme-pride','Einhornland':'unicorn-theme'
   };
   document.body.classList.add(classByTheme[data.State.Theme]||'theme-dark');
+  applyAnimationMode();
   applyThemeIcon(data.State.Theme);
   if(!data.State.ThemeFirstUsed[name]) data.State.ThemeFirstUsed[name]=new Date().toISOString();
   saveData();
@@ -235,6 +244,7 @@ function themeCompletionMessage(onTime){
   return messages[data.State.Theme]||messages.Dunkel;
 }
 function playThemeEffect(){
+  if(data.State.AnimationMode==='off') return;
   document.body.classList.remove('theme-reward-flash'); void document.body.offsetWidth; document.body.classList.add('theme-reward-flash');
   setTimeout(()=>document.body.classList.remove('theme-reward-flash'),900);
 }
@@ -276,7 +286,7 @@ function showNextAchievement(){
   $('#achievementDescription').textContent=a.id==='CRUMB_KING'?'Du hast alle Erfolge gesammelt. Hiermit wirst du offiziell zum Krümelkönig der To-do-Liste gekrönt!':a.description;
   makeConfetti(a.id==='CRUMB_KING'); dialog.showModal(); playSound(a.id==='CRUMB_KING'?'king':'achievement');
 }
-function makeConfetti(gold=false){ const layer=$('#confettiLayer'); layer.innerHTML=''; const colors=gold?['#ffd54a','#ffb300','#fff0a1']:['#ff5d68','#ff9b45','#ffd95a','#69d58a','#62a6ff','#b58cff']; for(let i=0;i<55;i++){const p=document.createElement('i');p.className='confetti';p.style.left=`${Math.random()*100}%`;p.style.background=colors[i%colors.length];p.style.setProperty('--duration',`${2+Math.random()*2}s`);p.style.setProperty('--drift',`${-90+Math.random()*180}px`);p.style.animationDelay=`${Math.random()*.7}s`;layer.appendChild(p);}}
+function makeConfetti(gold=false){ const layer=$('#confettiLayer'); layer.innerHTML=''; if(data.State.AnimationMode==='off') return; const colors=gold?['#ffd54a','#ffb300','#fff0a1']:['#ff5d68','#ff9b45','#ffd95a','#69d58a','#62a6ff','#b58cff']; const amount=data.State.AnimationMode==='subtle'?24:55; for(let i=0;i<amount;i++){const p=document.createElement('i');p.className='confetti';p.style.left=`${Math.random()*100}%`;p.style.background=colors[i%colors.length];p.style.setProperty('--duration',`${2+Math.random()*2}s`);p.style.setProperty('--drift',`${-90+Math.random()*180}px`);p.style.animationDelay=`${Math.random()*.7}s`;layer.appendChild(p);}}
 
 function renderStats(){
   const created=data.Items.length, done=data.Items.filter(i=>i.IsCompleted).length, onTime=data.Items.filter(i=>i.CookieAwarded).length, open=created-done, quote=created?Math.round(done/created*100):0;
@@ -318,9 +328,11 @@ function showUnicornWelcome(){
 }
 function showUnicornCookie(){
   const m=$('#unicornCookieMoment');
-  m.classList.remove('show'); void m.offsetWidth; m.classList.add('show');
+  if(data.State.AnimationMode!=='off'){
+    m.classList.remove('show'); void m.offsetWidth; m.classList.add('show');
+    setTimeout(()=>m.classList.remove('show'),1500);
+  }
   showToast('+1 magischer Belohnungskeks 🦄🍪');
-  setTimeout(()=>m.classList.remove('show'),1500);
 }
 function checkLegendaryRide(){
   const s=data.State;
@@ -334,6 +346,7 @@ function checkLegendaryRide(){
 function renderSettings(){
   $('#themeSelect').innerHTML=data.State.UnlockedThemes.filter(t=>THEMES[t]).map(t=>`<option ${t===data.State.Theme?'selected':''}>${THEMES[t].emoji} ${t}</option>`).join('');
   $('#soundToggle').checked=data.State.SoundsEnabled;
+  $('#animationModeSelect').value=data.State.AnimationMode||'subtle';
 }
 
 function exportBackup(){
@@ -371,6 +384,7 @@ function bindEvents(){
   $('#settingsButton').onclick=()=>$('#settingsDialog').showModal(); $('#cookieBalanceButton').onclick=()=>switchView('shop');
   $('#themeSelect').onchange=e=>{const name=e.target.value.replace(/^\S+\s/,'');data.State.Theme=name;applyTheme(name);renderAll();};
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};
+  $('#animationModeSelect').onchange=e=>{data.State.AnimationMode=e.target.value;applyAnimationMode();saveData();showToast(e.target.value==='off'?'Animationen ausgeschaltet.':e.target.value==='subtle'?'Dezente Animationen aktiviert.':'Volle Themenanimationen aktiviert.');};
   $('#iconHelpButton').onclick=()=>showToast('Das iPhone-Icon ist immer der bunte Keks. Zum Aktualisieren: altes Symbol löschen und die App in Safari erneut zum Home-Bildschirm hinzufügen.');
   $('#exportButton').onclick=exportBackup; $('#importInput').onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';};
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);

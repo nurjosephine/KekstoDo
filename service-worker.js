@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v3-living-themes-20260803';
+const CACHE_NAME = 'kekstodo-v3-1-animation-controls-20260803';
 const APP_SHELL = [
   './',
   './index.html',

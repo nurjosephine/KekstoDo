@@ -15,6 +15,7 @@ const THEMES = {
   'Frühling':{emoji:'🌸',price:25,dark:false,bg:'#f4fdee',surface:'#fff',raised:'#e2f4da',text:'#324f32',muted:'#688963',primary:'#ef7ea4',primaryText:'#421327',dangerBg:'#ffe1e7',dangerText:'#a33759',decoration:'🌼'},
   'Halloween':{emoji:'🎃',price:25,dark:true,bg:'#160d1f',surface:'#281836',raised:'#3a224c',text:'#f8ecff',muted:'#bea8cf',primary:'#ff821e',primaryText:'#321500',dangerBg:'#4d223a',dangerText:'#ffa6cb',decoration:'👻'},
   'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'},
+  'Regenbogen':{emoji:'🌈',price:35,dark:true,bg:'#050508',surface:'#111118',raised:'#1c1c26',text:'#ffffff',muted:'#c9c9d5',primary:'#ff3b6b',primaryText:'#ffffff',dangerBg:'#35121d',dangerText:'#ff8eaa',decoration:'leuchtenden Regenbogen-Akzenten'},
   'Einhornland':{emoji:'🦄',price:75,dark:false,bg:'#fff7ff',surface:'#ffffff',raised:'#f1e8ff',text:'#4b315d',muted:'#806a91',primary:'#d778e9',primaryText:'#32113a',dangerBg:'#ffe2f0',dangerText:'#a23568',decoration:'✨'}
 };
 function applyThemeIcon(themeName){
@@ -149,12 +150,12 @@ function applyTheme(name){
   for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,raised:t.raised,text:t.text,muted:t.muted,primary:t.primary,primaryText:t.primaryText,dangerBg:t.dangerBg,dangerText:t.dangerText})) r.setProperty(`--${k}`,v);
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
-  const themeClasses=['theme-dark','theme-cookie','chicken-theme','theme-autumn','theme-christmas','theme-spring','theme-halloween','theme-pride','unicorn-theme'];
+  const themeClasses=['theme-dark','theme-cookie','chicken-theme','theme-autumn','theme-christmas','theme-spring','theme-halloween','theme-pride','theme-rainbow','unicorn-theme'];
   document.body.classList.remove(...themeClasses);
   const classByTheme={
     'Dunkel':'theme-dark','Keks':'theme-cookie','Hühner':'chicken-theme','Herbst':'theme-autumn',
     'Weihnachten':'theme-christmas','Frühling':'theme-spring','Halloween':'theme-halloween',
-    'Pride':'theme-pride','Einhornland':'unicorn-theme'
+    'Pride':'theme-pride','Regenbogen':'theme-rainbow','Einhornland':'unicorn-theme'
   };
   document.body.classList.add(classByTheme[data.State.Theme]||'theme-dark');
   applyAnimationMode();
@@ -205,55 +206,150 @@ const THEME_COMMENTS = {
   'Dunkel':[
     'Die Nachtwache meldet: Aufgabe verschwunden. Sehr verdächtig. 🌙',
     'Leise erledigt. Nicht einmal der Mond hat etwas bemerkt.',
-    'Eine Aufgabe weniger im nächtlichen Aktennebel.'
+    'Eine Aufgabe weniger im nächtlichen Aktennebel.',
+    'Die Schatten haben kurz applaudiert. Sehr leise natürlich.',
+    'Erledigt. Der Mond trägt es in die Nachtschichtliste ein.',
+    'Diese Aufgabe ist jetzt offiziell im Dunkel verschwunden.',
+    'Die Nacht ist noch jung, deine Liste aber schon kürzer.',
+    'Unauffällig erledigt. Agent Keks übernimmt den Bericht.',
+    'Der Sternenhimmel vergibt einen diskreten Daumen hoch.',
+    'Eine Aufgabe weniger, eine Ausrede weniger. 🌙'
   ],
   'Keks':[
     'Aufgabe verputzt. Krümel fachgerecht entsorgt. 🍪',
     'Das Kekskonto nickt anerkennend.',
     'Knusprig erledigt. Der TÜV fürs Keksblech ist zufrieden.',
-    'Diese Aufgabe wurde erfolgreich weggenascht.'
+    'Diese Aufgabe wurde erfolgreich weggenascht.',
+    'Produktivität wurde erfolgreich gebacken.',
+    'Die To-do-Liste hat gerade leise geweint.',
+    'Ein Keks für dich. Keiner für die Aufgabe.',
+    'Der Krümelkönig nickt zufrieden. Vermutlich.',
+    'Diese Aufgabe wurde fachgerecht verkrümelt.',
+    'Der Ofen meldet: vollständig durchgebacken.',
+    'Krümelstatus: kontrolliert und freigegeben.',
+    'Die Aufgabe ist weg. Der Keks bestreitet jede Beteiligung.',
+    'Das war knusprig effizient.',
+    'Ein weiterer Punkt für die königliche Keksbilanz.',
+    'Die Keksdose hat vor Freude kurz geklappert.'
   ],
   'Hühner':[
     'Lord Krähibalt hat die Erledigung lautstark genehmigt. 🐔',
     'Ein Ei mehr im Nest. Niemand weiß genau, warum.',
     'Die Hühnerhofkontrolle meldet: alles ordnungsgemäß weggepickt.',
-    'Ein Küken hat kurz applaudiert und ist dann in die falsche Richtung gelaufen.'
+    'Ein Küken hat kurz applaudiert und ist dann in die falsche Richtung gelaufen.',
+    'Die Hennen diskutieren noch, ob das wirklich Arbeit war.',
+    'Eine Feder der Anerkennung wurde verliehen. 🪶',
+    'Lord Krähibalt kräht etwas von „vorbildlich“.',
+    'Das Küken behauptet, es hätte mitgeholfen.',
+    'Die Aufgabe wurde fachgerecht aus dem Nest befördert.',
+    'Drei Hennen haben abgestimmt: erledigt.',
+    'Ein Ei rollte vorbei und bestätigte den Vorgang.',
+    'Die Hühnerhofkontrolle ist zufrieden. Das ist selten.',
+    'Körner gezählt, Aufgabe erledigt, Chaos unverändert.',
+    'Lord Krähibalt verlangt eine feierliche Bekanntmachung.',
+    'Die Hennen picken anerkennend auf den Boden.'
   ],
   'Herbst':[
     'Diese Aufgabe darf jetzt zu den Blättern auf den Boden. 🍂',
     'Erledigt. Zeit für Tee und übertriebene Gemütlichkeit.',
     'Der Herbstwind hat die Aufgabe aus der Liste geweht.',
-    'Ein Pilz wäre beeindruckt. Vermutlich.'
+    'Ein Pilz wäre beeindruckt. Vermutlich.',
+    'Die Kastanien haben einstimmig zugestimmt.',
+    'Diese Aufgabe ist jetzt reif für den Kompost.',
+    'Ein Blatt weniger am Baum, eine Aufgabe weniger auf der Liste.',
+    'Der Kürbis schaut zufrieden. Oder einfach nur rund.',
+    'Produktivität mit Zimtduft.',
+    'Die Aufgabe fiel schneller als das Herbstlaub.',
+    'Der Tee darf jetzt ein kleines bisschen stolzer schmecken.',
+    'Der Wald flüstert: ordentlich erledigt.',
+    'Eine Eichel wurde zur Feier des Tages befördert.',
+    'Gemütlichkeit verdient. Aufgabe beseitigt.',
+    'Der Herbst hat die Abnahme erteilt. 🍁'
   ],
   'Weihnachten':[
     'Ho ho erledigt! 🎄',
     'Eine Aufgabe weniger auf der Liste des Weihnachtsmanns.',
     'Das kommt unter den Baum der Produktivität.',
-    'Ein Wichtel hat es geprüft. Es gilt als erledigt.'
+    'Ein Wichtel hat es geprüft. Es gilt als erledigt.',
+    'Der Weihnachtsmann macht sich eine Notiz.',
+    'Selbst die Plätzchen applaudieren.',
+    'Ein Geschenk weniger auf der Erledigungsliste.',
+    'Die Lichterkette blinkt anerkennend.',
+    'Diese Aufgabe wurde festlich verpackt und weggeräumt.',
+    'Ein Rentier nickt. Mehr Bestätigung gibt es heute nicht.',
+    'Der Wichtelrat meldet: sauber abgearbeitet.',
+    'Schnee drüber. Erledigt.',
+    'Das Christkind hat den Haken gesetzt.',
+    'Produktivität mit Zuckerstangenrand.',
+    'Die Aufgabe liegt jetzt friedlich unterm Baum.'
   ],
   'Frühling':[
     'Plopp, da ist eine Produktivitätsblüte aufgegangen. 🌸',
     'Die Bienen sind beeindruckt. Vermutlich.',
     'Eine Aufgabe weniger, eine Blüte mehr.',
-    'Der Schmetterling hat kurz genickt. Das zählt als Abnahme.'
+    'Der Schmetterling hat kurz genickt. Das zählt als Abnahme.',
+    'Die Tulpen feiern still, aber farbenfroh.',
+    'Diese Aufgabe wurde erfolgreich weggeblüht.',
+    'Eine Biene summt etwas von „gute Arbeit“.',
+    'Der Frühling hat einen Haken gesetzt.',
+    'Produktivität ist heute offenbar bestäubt worden.',
+    'Eine Knospe mehr, ein To-do weniger.',
+    'Der Gartenrat ist zufrieden.',
+    'Ein Schmetterling übernimmt die Qualitätskontrolle.',
+    'Frisch erledigt, direkt aus der Blumenwiese.',
+    'Die Sonne scheint ein kleines bisschen produktiver.',
+    'Diese Aufgabe darf jetzt in den Frühlingsurlaub.'
   ],
   'Halloween':[
     'Die Aufgabe wurde ins Jenseits befördert. 👻',
     'Der Kürbis nickt. Das ist vermutlich ein gutes Zeichen.',
     'Ein Geist hat die Aufgabe abgeholt. Rückgabe ausgeschlossen.',
-    'Erledigt. Selbst die Fledermäuse sind kurz still geworden.'
+    'Erledigt. Selbst die Fledermäuse sind kurz still geworden.',
+    'Diese Aufgabe spukt hier nicht mehr herum.',
+    'Die Fledermäuse haben abgestimmt. Erledigt.',
+    'Der Sensenmann hat den Vorgang abgezeichnet.',
+    'Ein Kürbis weniger skeptisch, eine Aufgabe weniger offen.',
+    'Die Aufgabe ist verschwunden. Sehr unheimlich effizient.',
+    'Das Spinnennetz der Bürokratie wurde durchtrennt.',
+    'Ein Geist flüstert: „sauber gearbeitet“.',
+    'Die Gruft meldet Vollzug.',
+    'Diese Aufgabe ruht jetzt in Frieden.',
+    'Der Vollmond beleuchtet einen frisch gesetzten Haken.',
+    'Süßes, Saures und erstaunlich viel Produktivität.'
   ],
   'Pride':[
     'Erledigt und dabei hervorragend ausgesehen. 🌈',
     'Diese Aufgabe ist jetzt offiziell farblos vor Neid.',
     'Ein Regenbogen hat die Erledigung gegengezeichnet.',
-    'Bunt, brillant und von der Liste verschwunden.'
+    'Bunt, brillant und von der Liste verschwunden.',
+    'Selbst der Regenbogen applaudiert.',
+    'Glitzerlevel: erfolgreich erhöht.',
+    'Diese Aufgabe strahlt jetzt in allen Farben.',
+    'Farben machen den Tag heller. Und die Liste kürzer.',
+    'Produktivität, aber in spektakulär.',
+    'Ein Regenbogenherz vergibt volle Punktzahl.',
+    'Diese Aufgabe wurde mit Farbe und Haltung erledigt.',
+    'Die Liste ist jetzt ein kleines Stück fabelhafter.',
+    'Haken gesetzt, Krone gerichtet, weiter geht’s.',
+    'Bunter kann Erfolg kaum aussehen.',
+    'Das Farbenmeer meldet: Aufgabe versenkt.'
   ],
   'Einhornland':[
     'Magisch erledigt. Physikalisch nicht erklärbar. 🦄',
     'Das Einhorn hat Glitzer draufgeworfen. Damit ist es offiziell.',
     'Eine Aufgabe weniger, drei Funkelsterne mehr.',
-    'Der Rat der Einhörner bestätigt die Erledigung einstimmig.'
+    'Der Rat der Einhörner bestätigt die Erledigung einstimmig.',
+    'Magie erledigt den Rest.',
+    'Die Sterne vergeben fünf von fünf Keksen.',
+    'Das Einhorn verteilt Glitzerpunkte.',
+    'Diese Aufgabe war fast schon zu magisch.',
+    'Ein Regenbogen wurde zur Qualitätskontrolle gerufen.',
+    'Die Aufgabe ist jetzt offiziell verzaubert und erledigt.',
+    'Das Einhorn wiehert anerkennend. Sehr würdevoll.',
+    'Sternenstaub drauf, Haken dran.',
+    'Die Magieabteilung meldet erfolgreichen Abschluss.',
+    'Ein Kristall hat kurz geleuchtet. Das gilt als Zustimmung.',
+    'Diese Aufgabe galoppiert jetzt ins Reich der Erledigten.'
   ]
 };
 
@@ -293,14 +389,30 @@ const SPECIAL_COMMENTS = {
   }
 };
 
+const ULTRA_RARE_COMMENTS = [
+  '👑 Der Krümelkönig persönlich: „Ich beobachte dich schon eine Weile … du machst das erstaunlich gut.“',
+  '🐔 Lord Krähibalt: „KRAAAAH!“ Übersetzung: Weiter so.',
+  '🦄 Du hast gerade den Einhorn-Lotto-Kommentar gefunden.',
+  '🍪 Herzlichen Glückwunsch. Dieser Kommentar ist seltener als ein Keks, der nicht gegessen wird.',
+  '✨ Ein äußerst seltenes Produktivitätswesen wurde gesichtet. Es war vermutlich du.',
+  '📜 Der königliche Archivar notiert: außergewöhnlich fleißiger Keks entdeckt.',
+  '🥚 Ein goldenes Ei ist kurz durchs Bild gerollt. Niemand darf Fragen stellen.',
+  '🌈 Der Regenbogen hat heute Überstunden gemacht, nur um das zu sehen.'
+];
+
 let commentTimer;
-function showComment(text){
+function showComment(comment){
   const el=$('#commentBubble');
-  if(!el||!text) return;
-  el.textContent=text;
+  if(!el||!comment) return;
+  const payload=typeof comment==='string'?{text:comment,rare:false}:comment;
+  el.textContent=payload.text;
+  el.classList.toggle('ultra-rare',Boolean(payload.rare));
   el.classList.add('show');
   clearTimeout(commentTimer);
-  commentTimer=setTimeout(()=>el.classList.remove('show'),10000);
+  commentTimer=setTimeout(()=>{
+    el.classList.remove('show');
+    setTimeout(()=>el.classList.remove('ultra-rare'),260);
+  },10000);
 }
 function completedTodayCount(now=new Date()){
   const today=dateOnly(now);
@@ -310,6 +422,16 @@ function chooseTaskComment(item,now){
   const mode=data.State.CommentMode||'rare';
   if(mode==='off') return null;
   data.State.CommentCompletionCounter=(data.State.CommentCompletionCounter||0)+1;
+
+  if(data.State.AllTimeCompleted===404){
+    return {rare:true,text:'404 — Aufgabe nicht gefunden. … Ach nein. Du hast sie ja gerade erledigt. 🍪'};
+  }
+
+  const ultraRareChance=mode==='frequent'?0.004:0.002;
+  if(Math.random()<ultraRareChance){
+    return {rare:true,text:ULTRA_RARE_COMMENTS[Math.floor(Math.random()*ULTRA_RARE_COMMENTS.length)]};
+  }
+
   const dayItems=data.Items.filter(i=>i.Day===item.Day);
   const dayComplete=dayItems.length>0&&dayItems.every(i=>i.IsCompleted);
   const firstToday=completedTodayCount(now)===1;
@@ -424,6 +546,29 @@ function renderStats(){
   $('#historyChart').innerHTML=hist.length?hist.map(h=>`<div class="bar-row"><span class="bar-label">${new Date(h.WeekEnding).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})}</span><div class="bar-track"><div class="bar-fill" style="width:${h.Completed/max*100}%"></div></div><span class="bar-value">${h.Completed}</span></div>`).join(''):'<p class="empty-state">Nach dem ersten Wochenreset erscheint hier deine Wochenhistorie.</p>';
   const wdMax=Math.max(1,...DAYS.map(d=>data.State.WeekdayCompleted[d.name]||0));
   $('#weekdayChart').innerHTML=DAYS.map(d=>`<div class="bar-row"><span class="bar-label">${d.name}</span><div class="bar-track"><div class="bar-fill" style="width:${(data.State.WeekdayCompleted[d.name]||0)/wdMax*100}%;background:${d.color}"></div></div><span class="bar-value">${data.State.WeekdayCompleted[d.name]||0}</span></div>`).join('');
+  renderPersonalRecords();
+}
+function renderPersonalRecords(){
+  const s=data.State;
+  const weekdayEntries=DAYS.map(d=>[d.name,s.WeekdayCompleted[d.name]||0]);
+  const bestWeekday=weekdayEntries.reduce((best,x)=>x[1]>best[1]?x:best,['Noch keiner',0]);
+  const hist=s.WeeklyHistory||[];
+  const bestHistoric=hist.reduce((best,h)=>(h.Completed||0)>(best.Completed||0)?h:best,{Completed:0,WeekEnding:null});
+  const currentDone=data.Items.filter(i=>i.IsCompleted).length;
+  const bestWeek=Math.max(s.BestWeekCompleted||0,bestHistoric.Completed||0,currentDone);
+  const bestWeekLabel=bestHistoric.WeekEnding && bestHistoric.Completed===bestWeek
+    ? new Date(bestHistoric.WeekEnding).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})
+    : (currentDone===bestWeek && bestWeek>0 ? 'laufende Woche' : 'Bisheriger Bestwert');
+  const records=[
+    ['🏅',s.AllTimeCompleted||0,'Insgesamt erledigt','Alle jemals abgehakten Aufgaben'],
+    ['🍪',s.LifetimeCookies||0,'Insgesamt verdiente Kekse','Auch bereits ausgegebene Kekse zählen'],
+    ['🔥',Math.max(s.BestDailyStreak||0,s.CurrentDailyStreak||0),'Längste Tageserie','Tage hintereinander mit erledigten Aufgaben'],
+    ['🥇',bestWeek,'Beste Woche',bestWeekLabel],
+    ['📅',bestWeekday[0], 'Stärkster Wochentag', `${bestWeekday[1]} erledigte Aufgaben`],
+    ['⭐',s.PerfectWeeks||0,'Perfekte Wochen','Alle Aufgaben pünktlich erledigt']
+  ];
+  const box=$('#personalRecords'); if(!box)return;
+  box.innerHTML=records.map(([icon,value,label,note])=>`<div class="record-card"><span class="record-icon">${icon}</span><div><strong>${value}</strong><span>${label}</span><small>${note}</small></div></div>`).join('');
 }
 function renderAchievements(){
   const unlocked=data.State.UnlockedAchievements; $('#achievementProgress').textContent=`${unlocked.length} von ${ACHIEVEMENTS.length} freigeschaltet`;
@@ -431,7 +576,7 @@ function renderAchievements(){
 }
 function renderShop(){
   $('#shopBalance').textContent=data.State.CookieBalance;
-  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${name==='Hühner'?'Dunkler Hühnerhof mit vielen Hühnern, Küken, Eiern, Federn und Körnerspuren.':`${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.`}</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
+  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${name==='Hühner'?'Dunkler Hühnerhof mit vielen Hühnern, Küken, Eiern, Federn und Körnerspuren.':name==='Regenbogen'?'Tiefschwarzer Hintergrund mit kräftig leuchtenden Regenbogen-Akzenten.':`${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.`}</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
 }
 function buyOrUseTheme(name){
   const t=THEMES[name]; if(!t)return;

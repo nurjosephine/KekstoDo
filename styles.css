@@ -375,3 +375,48 @@ body.unicorn-theme .comment-bubble::before{content:"🦄"}
 body.theme-cookie .comment-bubble::before{content:"🍪"}
 body.theme-dark .comment-bubble::before{content:"🌙"}
 @media(max-width:759px){.comment-bubble{left:14px;right:14px;bottom:88px;width:auto}}
+
+/* Ultraseltener Kommentar 3.3 */
+.comment-bubble.ultra-rare{
+  border:2px solid #ffd45a;
+  background:linear-gradient(135deg,var(--surface),color-mix(in srgb,#ffd45a 18%,var(--surface)));
+  box-shadow:0 18px 65px rgba(255,196,48,.35),0 0 0 5px rgba(255,212,90,.10);
+}
+.comment-bubble.ultra-rare::before{content:"👑"!important;filter:drop-shadow(0 2px 5px rgba(0,0,0,.25))}
+
+
+/* Keks-To-Do 3.4: Regenbogen-Nacht */
+body.theme-rainbow{
+  --bg:#050508;--surface:#101016;--raised:#1b1b24;--text:#fff;--muted:#c9c9d5;
+  --primary:#ff3b6b;--primaryText:#fff;--border:rgba(255,255,255,.13);
+  background:#050508;
+}
+body.theme-rainbow::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.34;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,45,85,.28),transparent 24%),
+    radial-gradient(circle at 92% 18%,rgba(255,145,0,.24),transparent 23%),
+    radial-gradient(circle at 78% 82%,rgba(0,215,255,.25),transparent 26%),
+    radial-gradient(circle at 18% 78%,rgba(164,70,255,.28),transparent 25%);
+}
+body.theme-rainbow .app-shell{position:relative;z-index:1}
+body.theme-rainbow .day-card,body.theme-rainbow .panel,body.theme-rainbow .stat-card,body.theme-rainbow .shop-card,body.theme-rainbow .achievement-card{
+  background:linear-gradient(#111117,#111117) padding-box,
+    linear-gradient(135deg,#ff3b5c,#ff9f0a,#ffd60a,#32d74b,#0a84ff,#bf5af2,#ff375f) border-box;
+  border:2px solid transparent;box-shadow:0 12px 34px rgba(0,0,0,.38);
+}
+body.theme-rainbow .primary-button,body.theme-rainbow .nav-button.active{
+  background:linear-gradient(90deg,#ff375f,#ff9f0a,#ffd60a,#30d158,#0a84ff,#bf5af2);color:#050508;font-weight:950;
+}
+body.theme-rainbow .task-row{background:#17171f;border-color:#30303d}
+body.theme-rainbow .task-check{background:#09090d;border-color:#0a84ff;box-shadow:0 0 10px rgba(10,132,255,.35)}
+body.theme-rainbow .task-check:checked{background:linear-gradient(135deg,#ff375f,#ffd60a,#30d158,#0a84ff,#bf5af2);border-color:#fff}
+body.theme-rainbow .task-check:checked::after{content:"✓";color:#050508;font-weight:1000}
+body.theme-rainbow .week-toolbar h2::before{content:"🌈 ";}
+body.theme-rainbow .bar-fill{box-shadow:0 0 12px color-mix(in srgb,currentColor 35%,transparent)}
+body.theme-rainbow .cookie-balance{background:linear-gradient(#111117,#111117) padding-box,linear-gradient(90deg,#ff375f,#ffd60a,#30d158,#0a84ff,#bf5af2) border-box;border:2px solid transparent}
+
+.records-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.record-card{display:flex;align-items:center;gap:13px;padding:15px;border-radius:18px;background:var(--raised);border:1px solid var(--border)}
+.record-icon{font-size:28px;flex:0 0 auto}.record-card div{display:flex;flex-direction:column;min-width:0}.record-card strong{font-size:24px;line-height:1.1}.record-card span:not(.record-icon){font-weight:850;margin-top:3px}.record-card small{color:var(--muted);margin-top:3px;line-height:1.25}
+@media(max-width:560px){.records-grid{grid-template-columns:1fr}.record-card{padding:14px}}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v3-2-comments';
+const CACHE_NAME = 'kekstodo-v3.4-rainbow-records';
 const APP_SHELL = [
   './',
   './index.html',

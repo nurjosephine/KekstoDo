@@ -68,7 +68,7 @@ const defaultState = () => ({
   Theme:'Dunkel', LastWeeklyResetMonday:null, LastWeeklyResetSunday:null, CookieBalance:0, LifetimeCookies:0, AllTimeCompleted:0,
   AllTimeOnTimeCompleted:0, BestWeekCompleted:0, WeeksReset:0, PerfectWeeks:0, ConsecutivePerfectMondays:0,
   ConsecutiveNoForgottenWeeks:0, EarlyTasks:0, ChickenThemeCompleted:0, ChristmasDecemberCookies:0,
-  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true, AnimationMode:'subtle', CommentMode:'rare', CommentCompletionCounter:0,
+  CurrentDailyStreak:0, BestDailyStreak:0, LastActiveDate:null, SoundsEnabled:true, AnimationMode:'subtle', CommentMode:'rare', CommentStyle:'theme', CommentCompletionCounter:0,
   UnlockedThemes:['Dunkel','Keks'], UnlockedAchievements:[], ThemeFirstUsed:{}, WeekdayCompleted:{}, WeeklyHistory:[],
   UnicornThemeCompleted:0, UnicornDiscovered:false, UnicornDiscoveryShown:false, LegendaryRideShown:false
 });
@@ -101,6 +101,7 @@ function normalizePackage(pkg){
   state.ThemeFirstUsed=state.ThemeFirstUsed||{}; state.WeekdayCompleted=state.WeekdayCompleted||{}; state.WeeklyHistory=state.WeeklyHistory||[];
   if(!['off','subtle','full'].includes(state.AnimationMode)) state.AnimationMode='subtle';
   if(!['off','rare','frequent'].includes(state.CommentMode)) state.CommentMode='rare';
+  if(!['theme','mummy','mixed'].includes(state.CommentStyle)) state.CommentStyle='theme';
   state.CommentCompletionCounter=Number(state.CommentCompletionCounter)||0;
   const items=(pkg.Items||pkg.items||[]).map(i=>({
     Id:i.Id||i.id||uuid(), Day:i.Day||i.day||'Montag', Text:i.Text||i.text||'', IsCompleted:!!(i.IsCompleted??i.isCompleted),
@@ -389,6 +390,67 @@ const SPECIAL_COMMENTS = {
   }
 };
 
+const MUMMY_COMMENTS = [
+  '🧻 Die Mumie hat die Aufgabe sauber eingewickelt. Erledigt.',
+  '🧟‍♀️ MUA! Die Aufgabe ist weg. Verdächtig mumienartig.',
+  '🧻 Eine Bandage weniger, eine Aufgabe weniger.',
+  '⚰️ Diese Aufgabe wurde fachgerecht einbalsamiert.',
+  '👀 Die Mumie hat nachgesehen. Ja, wirklich erledigt.',
+  '🧟 Die Mumie nickt. Dabei ist fast eine Bandage abgefallen.',
+  '📜 Aufgabe erledigt und direkt ins uralte Mumienarchiv gelegt.',
+  '🧻 Wickel, wickel, weg damit.',
+  '🏺 Die Grabkammerverwaltung bestätigt die Erledigung.',
+  '🧟‍♀️ Die Mumie wollte helfen. Jetzt ist die Aufgabe jedenfalls verschwunden.',
+  '✨ Mumienmagie! Bitte nicht fragen, wie das funktioniert.',
+  '🧻 Die Aufgabe wurde so gründlich eingewickelt, dass sie keiner mehr findet.',
+  '👻 Selbst der Geist nebenan findet das ziemlich produktiv.',
+  '🏺 Ein Skarabäus hat abgestimmt: eindeutig erledigt.',
+  '🧟 MUA! Das war mumifiziert effizient.',
+  '📋 Die Mumie setzt ein Häkchen. Mit erstaunlich wenig Fingern.',
+  '🧻 Bandagenkontrolle bestanden. Aufgabe ebenfalls.',
+  '⚱️ Diese Aufgabe ruht jetzt in Frieden.',
+  '🧟‍♀️ Die Mumie hat kurz gejubelt. Es klang hauptsächlich nach „MUA!“',
+  '🌙 Die Grabkammer ist beeindruckt. Das kommt nicht oft vor.',
+  '🧻 Aufgabe eingewickelt, versiegelt und aus der Liste verbannt.',
+  '🏜️ Jahrtausende gewartet und dann diese Aufgabe in Sekunden erledigt.',
+  '🧟 Die Mumie behauptet, sie hätte das schon vor 3000 Jahren erledigt.',
+  '📜 Auf der alten Schriftrolle steht jetzt: ERLEDIGT.',
+  '🧻 Vorsicht: frisch mumifizierte Aufgabe.',
+  '⚰️ Hier liegt eine ehemalige Aufgabe. Sie hatte keine Chance.',
+  '🧟‍♀️ Die Mumie ist stolz. Man sieht es an den… Bandagen?',
+  '🏺 Pharaonisch gut erledigt.',
+  '👀 Zwei riesige Mumienaugen bestätigen: Haken dran.',
+  '🧻 Die Bandagenabteilung meldet Vollzug.',
+  '🧟 MUA MUA! Übersetzung: Sehr ordentlich.',
+  '✨ Ein uralter Fluch wurde aufgehoben. Oder nur eine Aufgabe. Egal.',
+  '📋 Die Mumie hat die Liste kontrolliert und nichts zu meckern.',
+  '⚱️ Aufgabe beigesetzt. Nächste bitte.',
+  '🧻 Einmal komplett herumgewickelt und fertig.',
+  '🧟‍♀️ Die Mumie macht einen kleinen Freudentanz. Sehr langsam.',
+  '🏜️ Sand drauf. Erledigt.',
+  '👻 Die Spukabteilung schickt Glückwünsche.',
+  '🧻 Diese Aufgabe ist jetzt offiziell bandagiert und erledigt.',
+  '🧟 Die Mumie wollte „Bravo“ sagen. Heraus kam „MUA!“'
+];
+
+const MUMMY_SPECIAL_COMMENTS = {
+  first:[
+    '🌅 Die erste Aufgabe des Tages ist mumifiziert. MUA!',
+    '🧟‍♀️ Die Mumie ist wach. Irgendwie. Erste Aufgabe erledigt!',
+    '🧻 Erste Bandage des Tages sitzt. Weiter geht’s.'
+  ],
+  dayComplete:[
+    '🏺 Tagesliste leer! Die Mumie schließt zufrieden die Grabkammer.',
+    '⚰️ Alle Aufgaben dieses Tages ruhen jetzt in Frieden.',
+    '🧟‍♀️ MUA! Die Mumie meldet: Hier gibt es nichts mehr zu erledigen.'
+  ],
+  streak:[
+    '🧻 Aufgabenserie! Der Bandagenvorrat wird langsam knapp.',
+    '🧟 Die Mumie kommt kaum hinterher mit dem Einwickeln.',
+    '🏜️ Diese Serie überlebt vermutlich die nächsten 3000 Jahre.'
+  ]
+};
+
 const ULTRA_RARE_COMMENTS = [
   '👑 Der Krümelkönig persönlich: „Ich beobachte dich schon eine Weile … du machst das erstaunlich gut.“',
   '🐔 Lord Krähibalt: „KRAAAAH!“ Übersetzung: Weiter so.',
@@ -437,12 +499,19 @@ function chooseTaskComment(item,now){
   const firstToday=completedTodayCount(now)===1;
   const streak=data.State.CommentCompletionCounter%5===0;
   const specialChance=mode==='frequent'?0.9:0.62;
-  if(dayComplete&&Math.random()<specialChance) return SPECIAL_COMMENTS.dayComplete[data.State.Theme];
-  if(firstToday&&Math.random()<specialChance) return SPECIAL_COMMENTS.first[data.State.Theme];
-  if(streak&&Math.random()<specialChance) return SPECIAL_COMMENTS.streak[data.State.Theme];
+  const style=data.State.CommentStyle||'theme';
+  const useMummy=style==='mummy'||(style==='mixed'&&Math.random()<0.5);
+  const mummySpecial=(kind)=>{
+    const pool=MUMMY_SPECIAL_COMMENTS[kind];
+    return pool[Math.floor(Math.random()*pool.length)];
+  };
+  if(dayComplete&&Math.random()<specialChance) return useMummy?mummySpecial('dayComplete'):(SPECIAL_COMMENTS.dayComplete[data.State.Theme]||'Tagesliste komplett erledigt! ✨');
+  if(firstToday&&Math.random()<specialChance) return useMummy?mummySpecial('first'):(SPECIAL_COMMENTS.first[data.State.Theme]||'Die erste Aufgabe des Tages ist erledigt. ✨');
+  if(streak&&Math.random()<specialChance) return useMummy?mummySpecial('streak'):(SPECIAL_COMMENTS.streak[data.State.Theme]||'Eine schöne Aufgabenserie! ✨');
   const chance=mode==='frequent'?0.68:0.24;
   if(Math.random()>chance) return null;
-  const pool=THEME_COMMENTS[data.State.Theme]||THEME_COMMENTS.Keks;
+  const themePool=THEME_COMMENTS[data.State.Theme]||THEME_COMMENTS.Keks;
+  const pool=style==='mummy'?MUMMY_COMMENTS:style==='mixed'?[...themePool,...MUMMY_COMMENTS]:themePool;
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
@@ -621,6 +690,7 @@ function renderSettings(){
   $('#soundToggle').checked=data.State.SoundsEnabled;
   $('#animationModeSelect').value=data.State.AnimationMode||'subtle';
   $('#commentModeSelect').value=data.State.CommentMode||'rare';
+  $('#commentStyleSelect').value=data.State.CommentStyle||'theme';
 }
 
 function exportBackup(){
@@ -660,7 +730,8 @@ function bindEvents(){
   $('#soundToggle').onchange=e=>{data.State.SoundsEnabled=e.target.checked;saveData();};
   $('#animationModeSelect').onchange=e=>{data.State.AnimationMode=e.target.value;applyAnimationMode();saveData();showToast(e.target.value==='off'?'Animationen ausgeschaltet.':e.target.value==='subtle'?'Dezente Animationen aktiviert.':'Volle Themenanimationen aktiviert.');};
   $('#commentModeSelect').onchange=e=>{data.State.CommentMode=e.target.value;saveData();showToast(e.target.value==='off'?'Lustige Kommentare ausgeschaltet.':e.target.value==='rare'?'Gelegentliche Kommentare aktiviert.':'Häufige Kommentare aktiviert.');};
-  $('#iconHelpButton').onclick=()=>showToast('Das iPhone-Icon ist immer der bunte Keks. Zum Aktualisieren: altes Symbol löschen und die App in Safari erneut zum Home-Bildschirm hinzufügen.');
+  $('#commentStyleSelect').onchange=e=>{data.State.CommentStyle=e.target.value;saveData();showToast(e.target.value==='mummy'?'🧟 Mumienkommentare aktiviert. MUA!':e.target.value==='mixed'?'🧟🍪 Gemischte Kommentare aktiviert.':'🎨 Theme-Kommentare aktiviert.');};
+  $('#iconHelpButton').onclick=()=>showToast('Das iPhone-Icon ist jetzt die knuffige Mumie. Zum Aktualisieren: altes Symbol löschen und die App in Safari erneut zum Home-Bildschirm hinzufügen.');
   $('#exportButton').onclick=exportBackup; $('#importInput').onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value='';};
   $('#resetDataButton').onclick=()=>askConfirm('Alle Daten löschen?','Aufgaben, Kekse, Shopkäufe, Erfolge und Statistik werden vollständig gelöscht.',resetAll);
   $('#confirmOk').onclick=e=>{e.preventDefault();$('#confirmDialog').close();const a=confirmationAction;confirmationAction=null;a?.();};

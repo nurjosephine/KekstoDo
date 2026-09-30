@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v3.4-rainbow-records';
+const CACHE_NAME = 'kekstodo-v3.6-mummywitch-icon';
 const APP_SHELL = [
   './',
   './index.html',

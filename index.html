@@ -9,9 +9,9 @@
   <meta name="apple-mobile-web-app-title" content="Keks-To-Do">
   <title>Keks-To-Do</title>
   <link id="appManifest" rel="manifest" href="./manifest.webmanifest?v=20260723-chicken-yard-1">
-  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260723-chicken-yard-1">
-  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon.png?v=20260723-chicken-yard-1">
-  <link id="appFavicon" rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png?v=20260723-chicken-yard-1">
+  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=20260930-mummywitch-1">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="./apple-touch-icon.png?v=20260930-mummywitch-1">
+  <link id="appFavicon" rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png?v=20260930-mummywitch-1">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -100,8 +100,9 @@
       <div class="setting-row"><div><strong>Sounds</strong><small>Knuspern und Erfolgsplopp.</small></div><label class="switch"><input id="soundToggle" type="checkbox"><span></span></label></div>
       <div class="setting-row"><div><strong>Animationen</strong><small>Aus, dezent bei Aktionen oder vollständig lebendig.</small></div><select id="animationModeSelect"><option value="off">Aus</option><option value="subtle">Dezent (Empfehlung)</option><option value="full">Voll</option></select></div>
       <div class="setting-row"><div><strong>Lustige Kommentare</strong><small>Theme-Sprüche bleiben etwa 10 Sekunden sichtbar.</small></div><select id="commentModeSelect"><option value="off">Aus</option><option value="rare">Selten (Empfehlung)</option><option value="frequent">Häufig</option></select></div>
-      <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Das Home-Bildschirm-Icon bleibt immer der bunte Keks. Nur innerhalb der App erscheint im Einhornland-Theme ein Einhorn.</small></div><img id="appIconPreview" class="app-icon-preview" src="./apple-touch-icon.png?v=20260723-chicken-yard-1" alt="Vorschau des App-Icons"></div>
-      <button id="iconHelpButton" type="button" class="secondary-button full-width-button">🍪 iPhone-Icon aktualisieren</button>
+      <div class="setting-row"><div><strong>Kommentar-Art</strong><small>Wähle, wer deine erledigten Aufgaben kommentiert.</small></div><select id="commentStyleSelect"><option value="theme">🎨 Passend zum Theme</option><option value="mummy">🧟 Nur Mumien</option><option value="mixed">🧟🍪 Gemischt</option></select></div>
+      <div class="setting-row icon-setting"><div><strong>App-Icon</strong><small>Das Home-Bildschirm-Icon ist jetzt die knuffige To-do-Mumie. 🧟</small></div><img id="appIconPreview" class="app-icon-preview" src="./apple-touch-icon.png?v=20260930-mummywitch-1" alt="Vorschau des App-Icons"></div>
+      <button id="iconHelpButton" type="button" class="secondary-button full-width-button">🧟 iPhone-Icon aktualisieren</button>
       <div class="setting-actions">
         <button id="exportButton" type="button" class="secondary-button">💾 Backup exportieren</button>
         <label class="secondary-button file-button">📂 Backup importieren<input id="importInput" type="file" accept=".keks,application/json"></label>

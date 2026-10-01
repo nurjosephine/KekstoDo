@@ -16,6 +16,7 @@ const THEMES = {
   'Halloween':{emoji:'🎃',price:25,dark:true,bg:'#160d1f',surface:'#281836',raised:'#3a224c',text:'#f8ecff',muted:'#bea8cf',primary:'#ff821e',primaryText:'#321500',dangerBg:'#4d223a',dangerText:'#ffa6cb',decoration:'👻'},
   'Pride':{emoji:'🌈',price:25,dark:false,bg:'#fafaff',surface:'#fff',raised:'#ebeeff',text:'#313142',muted:'#67677e',primary:'#7a4ac9',primaryText:'#fff',dangerBg:'#ffe0e8',dangerText:'#aa2f55',decoration:'💖'},
   'Regenbogen':{emoji:'🌈',price:35,dark:true,bg:'#050508',surface:'#111118',raised:'#1c1c26',text:'#ffffff',muted:'#c9c9d5',primary:'#ff3b6b',primaryText:'#ffffff',dangerBg:'#35121d',dangerText:'#ff8eaa',decoration:'leuchtenden Regenbogen-Akzenten'},
+  'Mumienhexe':{emoji:'🧟‍♀️',price:40,dark:true,bg:'#030306',surface:'#100b16',raised:'#1a1024',text:'#fff7ef',muted:'#d5c8df',primary:'#ff3bd4',primaryText:'#fff',dangerBg:'#321020',dangerText:'#ff91ca',decoration:'Mumienhexen, Bandagen, Monde, Sterne und Neonmagie'},
   'Einhornland':{emoji:'🦄',price:75,dark:false,bg:'#fff7ff',surface:'#ffffff',raised:'#f1e8ff',text:'#4b315d',muted:'#806a91',primary:'#d778e9',primaryText:'#32113a',dangerBg:'#ffe2f0',dangerText:'#a23568',decoration:'✨'}
 };
 function applyThemeIcon(themeName){
@@ -151,12 +152,12 @@ function applyTheme(name){
   for(const [k,v] of Object.entries({bg:t.bg,surface:t.surface,raised:t.raised,text:t.text,muted:t.muted,primary:t.primary,primaryText:t.primaryText,dangerBg:t.dangerBg,dangerText:t.dangerText})) r.setProperty(`--${k}`,v);
   document.documentElement.style.colorScheme=t.dark?'dark':'light';
   $('meta[name="theme-color"]').content=t.bg;
-  const themeClasses=['theme-dark','theme-cookie','chicken-theme','theme-autumn','theme-christmas','theme-spring','theme-halloween','theme-pride','theme-rainbow','unicorn-theme'];
+  const themeClasses=['theme-dark','theme-cookie','chicken-theme','theme-autumn','theme-christmas','theme-spring','theme-halloween','theme-pride','theme-rainbow','theme-mummy','unicorn-theme'];
   document.body.classList.remove(...themeClasses);
   const classByTheme={
     'Dunkel':'theme-dark','Keks':'theme-cookie','Hühner':'chicken-theme','Herbst':'theme-autumn',
     'Weihnachten':'theme-christmas','Frühling':'theme-spring','Halloween':'theme-halloween',
-    'Pride':'theme-pride','Regenbogen':'theme-rainbow','Einhornland':'unicorn-theme'
+    'Pride':'theme-pride','Regenbogen':'theme-rainbow','Mumienhexe':'theme-mummy','Einhornland':'unicorn-theme'
   };
   document.body.classList.add(classByTheme[data.State.Theme]||'theme-dark');
   applyAnimationMode();
@@ -510,7 +511,7 @@ function chooseTaskComment(item,now){
   if(streak&&Math.random()<specialChance) return useMummy?mummySpecial('streak'):(SPECIAL_COMMENTS.streak[data.State.Theme]||'Eine schöne Aufgabenserie! ✨');
   const chance=mode==='frequent'?0.68:0.24;
   if(Math.random()>chance) return null;
-  const themePool=THEME_COMMENTS[data.State.Theme]||THEME_COMMENTS.Keks;
+  const themePool=data.State.Theme==='Mumienhexe'?MUMMY_COMMENTS:(THEME_COMMENTS[data.State.Theme]||THEME_COMMENTS.Keks);
   const pool=style==='mummy'?MUMMY_COMMENTS:style==='mixed'?[...themePool,...MUMMY_COMMENTS]:themePool;
   return pool[Math.floor(Math.random()*pool.length)];
 }
@@ -645,7 +646,7 @@ function renderAchievements(){
 }
 function renderShop(){
   $('#shopBalance').textContent=data.State.CookieBalance;
-  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${name==='Hühner'?'Dunkler Hühnerhof mit vielen Hühnern, Küken, Eiern, Federn und Körnerspuren.':name==='Regenbogen'?'Tiefschwarzer Hintergrund mit kräftig leuchtenden Regenbogen-Akzenten.':`${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.`}</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
+  $('#shopGrid').innerHTML=Object.entries(THEMES).filter(([name])=>name!=='Einhornland'||data.State.UnicornDiscovered||data.State.UnlockedThemes.includes(name)).map(([name,t])=>{const owned=data.State.UnlockedThemes.includes(name),active=data.State.Theme===name;return `<article class="shop-card" style="--themePrimary:${t.primary};--themeBg:${t.bg};--themeSurface:${t.surface}"><div class="shop-top"><div><span class="shop-emoji">${t.emoji}</span><div class="shop-name">${name}</div></div><span class="badge ${owned?'unlocked':''}">${active?'Aktiv':owned?'Freigeschaltet':'Im Shop'}</span></div><div class="theme-swatch"></div><p class="shop-description">${name==='Hühner'?'Dunkler Hühnerhof mit vielen Hühnern, Küken, Eiern, Federn und Körnerspuren.':name==='Regenbogen'?'Tiefschwarzer Hintergrund mit kräftig leuchtenden Regenbogen-Akzenten.':name==='Mumienhexe'?'Schwarze Mumiennacht mit Neon-Pink, Lila, Blau, Bandagen, Sternen und knuffiger Hexenmagie.':`${t.dark?'Dunkles':'Helles'} Theme mit ${t.decoration}-Dekoration.`}</p><div class="shop-bottom"><span class="price">${t.price?`🍪 ${t.price}`:'Kostenlos'}</span><button class="${owned?'secondary-button':'primary-button'}" data-theme-action="${name}">${active?'Ausgewählt':owned?'Verwenden':'Kaufen'}</button></div></article>`}).join('');
 }
 function buyOrUseTheme(name){
   const t=THEMES[name]; if(!t)return;

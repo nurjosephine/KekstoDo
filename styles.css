@@ -420,3 +420,20 @@ body.theme-rainbow .cookie-balance{background:linear-gradient(#111117,#111117) p
 .record-card{display:flex;align-items:center;gap:13px;padding:15px;border-radius:18px;background:var(--raised);border:1px solid var(--border)}
 .record-icon{font-size:28px;flex:0 0 auto}.record-card div{display:flex;flex-direction:column;min-width:0}.record-card strong{font-size:24px;line-height:1.1}.record-card span:not(.record-icon){font-weight:850;margin-top:3px}.record-card small{color:var(--muted);margin-top:3px;line-height:1.25}
 @media(max-width:560px){.records-grid{grid-template-columns:1fr}.record-card{padding:14px}}
+
+/* v3.7 Mumienhexe */
+body.theme-mummy{--bg:#030306;--surface:#100b16;--raised:#1a1024;--text:#fff7ef;--muted:#d5c8df;--primary:#ff3bd4;--primaryText:#fff;--border:rgba(255,90,235,.24);background:radial-gradient(circle at 12% 10%,rgba(255,38,201,.16),transparent 27%),radial-gradient(circle at 88% 20%,rgba(62,110,255,.16),transparent 25%),radial-gradient(circle at 72% 86%,rgba(147,51,234,.18),transparent 29%),#030306}
+body.theme-mummy::before{content:"☾  ✦  ♡  ✧  🧻  ✦  ☾  ♡";position:fixed;inset:18px 16px auto;pointer-events:none;z-index:0;color:#ff69e6;font-size:18px;letter-spacing:18px;opacity:.22;text-align:center}
+body.theme-mummy .app-shell{position:relative;z-index:1}
+body.theme-mummy .day-card,body.theme-mummy .panel,body.theme-mummy .stat-card,body.theme-mummy .shop-card,body.theme-mummy .achievement-card{background:linear-gradient(145deg,rgba(20,12,29,.98),rgba(8,7,14,.98)) padding-box,linear-gradient(135deg,#ff35d3,#8b5cf6,#38bdf8,#ff8a24) border-box;border:2px solid transparent;box-shadow:0 10px 32px rgba(0,0,0,.42),0 0 18px rgba(255,53,211,.08)}
+body.theme-mummy .week-toolbar h2::before{content:"🧟‍♀️ ";filter:drop-shadow(0 0 7px #ff4cdd)}
+body.theme-mummy .task-row{background:#120d19;border-color:#33203e}
+body.theme-mummy .primary-button,body.theme-mummy .nav-button.active{background:linear-gradient(90deg,#ff35d3,#9b5cff,#38bdf8);color:#09050d;font-weight:950;box-shadow:0 0 16px rgba(255,53,211,.22)}
+body.theme-mummy .cookie-balance{background:linear-gradient(#100b16,#100b16) padding-box,linear-gradient(90deg,#ff35d3,#8b5cf6,#38bdf8) border-box;border:2px solid transparent}
+body.theme-mummy .task-check{appearance:none;-webkit-appearance:none;width:36px;height:36px;border:0;background:transparent;display:grid;place-items:center;overflow:visible;box-shadow:none;position:relative}
+body.theme-mummy .task-check::before{content:"🧟";font-size:28px;line-height:1;filter:grayscale(.25) brightness(.72);transition:transform .16s ease,filter .16s ease}
+body.theme-mummy .task-check:checked{background:transparent;border:0}
+body.theme-mummy .task-check:checked::before{content:"🧟‍♀️";filter:none;transform:scale(1.12);text-shadow:0 0 10px #ff48d7}
+body.theme-mummy .task-check:checked::after{content:"✓";position:absolute;font-size:12px;font-weight:1000;color:#fff;background:#7c3aed;border-radius:50%;width:17px;height:17px;display:grid;place-items:center;right:-3px;bottom:-3px;box-shadow:0 0 8px #ff42dc}
+body.theme-mummy .day-card{position:relative;overflow:hidden}
+body.theme-mummy .day-card::after{content:"🧻 ✦";position:absolute;right:14px;top:12px;opacity:.18;font-size:18px;pointer-events:none}

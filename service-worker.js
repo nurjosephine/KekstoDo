@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v3.7-mummy-theme';
+const CACHE_NAME = 'kekstodo-v3.8-real-mummies';
 const APP_SHELL = [
   './',
   './index.html',

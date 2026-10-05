@@ -1,9 +1,9 @@
-const CACHE_NAME = 'kekstodo-v4.5-clean';
+const CACHE_NAME = 'kekstodo-v4.6-reanimation';
 const APP_SHELL = [
   './',
   './index.html',
-  './styles-v45.css',
-  './app-v45.js',
+  './styles.css',
+  './app.js',
   './manifest.webmanifest',
   './apple-touch-icon.png',
   './icons/apple-touch-icon.png',
@@ -32,14 +32,22 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    fetch(event.request, {cache:'no-store'})
+    fetch(event.request)
       .then(response => {
-        if (response && response.ok) {
-          const copy=response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request,copy));
-        }
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
         return response;
       })
       .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+  );
+});
+
+
+// FORCE_CLEAR_42: v4.2 entfernt alte App-Shell-Caches, damit iOS keine alten Mumienbilder behält.
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(key => key !== 'kekstodo-v4.2-force-transparent').map(key => caches.delete(key)))
+    ).then(() => self.clients.claim())
   );
 });

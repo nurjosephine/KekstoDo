@@ -183,7 +183,7 @@ function renderDays(){
     const items=data.Items.filter(i=>i.Day===d.name); const done=items.filter(i=>i.IsCompleted).length;
     return `<article class="day-card ${activeDay===d.name?'mobile-active':''}" style="--day:${d.color}" data-day-card="${d.name}">
       <header class="day-card-header"><div class="day-title-wrap"><span class="day-dot"></span><div><h3>${d.name}</h3><span class="day-count">${done} von ${items.length} erledigt</span></div></div>
-      <div class="day-actions"><button class="cookie-icon-button delete-cookie" data-clear-day="${d.name}" title="Alle Aufgaben löschen" aria-label="Alle Aufgaben von ${d.name} löschen"><span class="cookie-drawing"></span></button></div></header>
+      </header>
       ${items.length?`<ul class="task-list">${items.map(taskRow).join('')}</ul>`:`<div class="empty-state"><span class="empty-cookie">${themeEmptyState().icon}</span>${themeEmptyState().text}</div>`}
       <form class="inline-add" data-add-form="${d.name}"><input maxlength="180" placeholder="Neue Aufgabe für ${d.name} …" aria-label="Neue Aufgabe für ${d.name}"><button aria-label="Aufgabe hinzufügen">＋</button></form>
     </article>`;

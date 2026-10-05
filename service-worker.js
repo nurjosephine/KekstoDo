@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v4.2-force-transparent';
+const CACHE_NAME = 'kekstodo-v4.3-no-day-delete';
 const APP_SHELL = [
   './',
   './index.html',

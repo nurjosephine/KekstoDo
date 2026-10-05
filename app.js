@@ -580,7 +580,7 @@ function updateDailyStreak(now){
   data.State.BestDailyStreak=Math.max(data.State.BestDailyStreak,data.State.CurrentDailyStreak); data.State.LastActiveDate=now.toISOString();
 }
 function deleteTask(id){ data.Items=data.Items.filter(i=>i.Id!==id); saveData(); renderAll(); }
-function clearDay(day){ data.Items=data.Items.filter(i=>i.Day!==day); saveData(); renderAll(); showToast(`${day} wurde leergekrümelt.`); }
+wurde leergekrümelt.`); }
 
 function checkAchievements(){
   const s=data.State; const should={
@@ -716,7 +716,6 @@ function bindEvents(){
   document.addEventListener('click',e=>{
     const nav=e.target.closest('.nav-button');if(nav){switchView(nav.dataset.view);return;}
     const tab=e.target.closest('.day-tab');if(tab){activeDay=tab.dataset.day;renderDays();return;}
-    const clear=e.target.closest('[data-clear-day]');if(clear){const day=clear.dataset.clearDay;askConfirm(`${day} leeren?`,`Alle Aufgaben von ${day} werden gelöscht. Bereits verdiente Kekse bleiben erhalten.`,()=>clearDay(day));return;}
     const del=e.target.closest('.delete-task');if(del){const id=del.closest('.task-row').dataset.id;deleteTask(id);return;}
     const shop=e.target.closest('[data-theme-action]');if(shop){buyOrUseTheme(shop.dataset.themeAction);return;}
   });

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v4.3-no-day-delete';
+const CACHE_NAME = 'kekstodo-v4.4-button-exorcism';
 const APP_SHELL = [
   './',
   './index.html',

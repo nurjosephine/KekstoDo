@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kekstodo-v4.1-transparent-mummies';
+const CACHE_NAME = 'kekstodo-v4.2-force-transparent';
 const APP_SHELL = [
   './',
   './index.html',
@@ -39,5 +39,15 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+  );
+});
+
+
+// FORCE_CLEAR_42: v4.2 entfernt alte App-Shell-Caches, damit iOS keine alten Mumienbilder behält.
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(key => key !== 'kekstodo-v4.2-force-transparent').map(key => caches.delete(key)))
+    ).then(() => self.clients.claim())
   );
 });
